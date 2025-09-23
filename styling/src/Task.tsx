@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function Task() {
+export default function Task({ taskData }) {
 
     const [checked, setChecked] = useState(false)
     
@@ -22,14 +22,13 @@ export default function Task() {
     
     return (
     <>
-        {/* <div className="flex border border-gray-300 p-2 px-4 w-lg flex flex-row items-center gap-3 rounded-lg"> */}
         <div className={checked ? bgChecked : baseBgStyle}>
             <div id="checkbox-container" className={baseButtonStyle}>
                 <button onClick={toggleChecked} className={checked ? buttonChecked : baseButtonStyle}></button>
             </div>
                 <div id="task-area" className="flex flex-col justify-center rounded-md px-3 py-2">
-                <div id="task-name" className="text-lg font-regular">Sweep the Kitchen</div>
-                <div className="text-sm text-gray-600">Get under the cabinets, do a good job</div>
+                <div id="task-name" className="text-lg font-regular">{taskData.name}</div>
+                <div className="text-sm text-gray-600">{taskData.description}</div>
             </div>
         </div>
         

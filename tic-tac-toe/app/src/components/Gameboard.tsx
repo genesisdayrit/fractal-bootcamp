@@ -1,9 +1,38 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { initialGameState, makeMove, getGameStatusMessage, type GameState } from '../tictactoe'
 
 
 export default function Gameboard() {
+  
   const [gameState, setGameState] = useState<GameState>(initialGameState)
+
+  useEffect(() => {
+    fetchGameState()
+    console.log(gameState)
+    }, []
+  )
+
+  const fetchGameState = async () => {
+    let response = await fetch('/api/game')
+    let data = await response.json()
+    setGameState(data)
+  }
+
+  const sendMove = async (cellIndex: Number) => {
+    console.log('clicked')
+    let response = await fetch('api/move', {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({boardIndex: cellIndex})
+    })
+
+    let result = await response.json()
+
+    if (result.ok) {
+      console.log("Data sent sucessfully!", gameState)
+      fetchGameState()
+    }
+}
   return (
     <>
       <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
@@ -15,7 +44,7 @@ export default function Gameboard() {
           <button 
             key={i} 
             className="flex items-center justify-center w-[100px] h-[100px] border-[4px] border-black bg-white text-4xl font-bold" 
-            onClick={() => setGameState(prev => makeMove(prev, i))}
+            onClick={() => sendMove(i)}
           >
             {cell}
           </button>

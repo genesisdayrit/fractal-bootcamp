@@ -10,9 +10,9 @@ export default function Gameboard() {
       <h3>{getGameStatusMessage()}</h3>
       <div className="
         grid grid-cols-3
-        gap-[6px]              /* line thickness between squares */
-        bg-black               /* the gap color becomes the grid lines */
-        p-[6px]                /* outer border thickness */
+        gap-[6px]             
+        bg-black              
+        p-[6px]               
         w-72 sm:w-80           /* total board width */
         rounded-lg"
       >

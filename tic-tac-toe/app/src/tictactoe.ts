@@ -3,18 +3,16 @@ type Cell = Player | ''
 type GameState = {
     currentPlayer: Player
     board: Cell[]
-    gameStatus: 'X' | 'O' | 'tie' | 'in progress'
+    gameStatus: 'new game'| 'X' | 'O' | 'tie' | 'in progress'
     winner: Player | undefined
 }
 
-export function initialGameState(): GameState {
-    return {
-        currentPlayer: 'X',
+export const initialGameState: GameState = {
+            currentPlayer: 'X',
         board: Array(9).fill(''),
-        gameStatus: 'in progress',
+        gameStatus: 'new game',
         winner: undefined
     }
-}
 
 const winningCombinations = [
     // horizontal winners
@@ -49,7 +47,7 @@ function checkWinner(board: Cell[]): { winner?: Player; isDraw: boolean } {
 
 export function makeMove(gameState: GameState, cellIndex: number):GameState {
     // don't allow moves if game is over or cell is already filled = 
-    if (gameState.gameStatus !== 'in progress' || gameState.board[cellIndex] !== '' ) {
+    if (gameState.gameStatus !== 'new game' && gameState.gameStatus !== 'in progress' || gameState.board[cellIndex] !== '' ) {
         return gameState
     }
 
@@ -84,15 +82,5 @@ export function getGameStatusMessage(gameState: GameState): String {
     }
     return `Current player: ${gameState.currentPlayer}`
 }
-
-export function resetGame() {
-    return {
-        currentPlayer: 'X',
-        board: Array(9).fill(''),
-        gameStatus: 'in progress',
-        winner: undefined
-    }
-}
-
 
 export type { Player, Cell, GameState }

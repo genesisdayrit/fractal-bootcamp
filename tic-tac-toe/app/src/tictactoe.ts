@@ -1,9 +1,5 @@
-
-import { useState } from 'react'
-
 type Player = 'X' | 'O'
 type Cell = Player | ''
-
 type GameState = {
     currentPlayer: Player
     board: Cell[]
@@ -11,10 +7,10 @@ type GameState = {
     winner: Player | undefined
 }
 
-function createInitialGameState(): GameState {
+export function initialGameState(): GameState {
     return {
         currentPlayer: 'X',
-        board: Array(9).fill('') as Cell[],
+        board: Array(9).fill(''),
         gameStatus: 'in progress',
         winner: undefined
     }
@@ -51,56 +47,52 @@ function checkWinner(board: Cell[]): { winner?: Player; isDraw: boolean } {
     return { winner: undefined, isDraw }
 }
 
-export function useGameState() {
-    const [gameState, setGameState] = useState<GameState>(createInitialGameState())
-
-    const makeMove = (cellIndex: number) => {
-        // don't allow moves if game is over or cell is already filled
-        if (gameState.gameStatus !== 'in progress' || gameState.board[cellIndex] !== '') {
-            return
-        }
-
-        const newBoard = [...gameState.board]
-        newBoard[cellIndex] = gameState.currentPlayer
-
-        const { winner, isDraw } = checkWinner(newBoard)
-        
-        let newGameStatus: GameState['gameStatus']
-        if (winner) {
-            newGameStatus = winner
-        } else if (isDraw) {
-            newGameStatus = 'tie'
-        } else {
-            newGameStatus = 'in progress'
-        }
-
-        setGameState({
-            currentPlayer: gameState.currentPlayer === 'X' ? 'O' : 'X',
-            board: newBoard,
-            gameStatus: newGameStatus,
-            winner
-        })
+export function makeMove(gameState: GameState, cellIndex: number):GameState {
+    // don't allow moves if game is over or cell is already filled = 
+    if (gameState.gameStatus !== 'in progress' || gameState.board[cellIndex] !== '' ) {
+        return gameState
     }
 
-    const resetGame = () => {
-        setGameState(createInitialGameState())
-    }
+    // if move is valid, update cell to the player and update game status
+    const newBoard = [...gameState.board]
+    newBoard[cellIndex] = gameState.currentPlayer
 
-    const getGameStatusMessage = () => {
-        if (gameState.gameStatus === 'tie') {
-            return "It's a tie!"
-        } else if (gameState.winner) {
-            return `Player ${gameState.winner} wins!`
-        }
-        return `Current player: ${gameState.currentPlayer}`
+    const { winner, isDraw } = checkWinner(newBoard)
+
+    let newGameStatus: GameState['gameStatus']
+    if (winner) {
+        newGameStatus = winner
+    } else if (isDraw) {
+        newGameStatus = 'tie'
+    } else {
+        newGameStatus = 'in progress'
     }
 
     return {
-        gameState,
-        makeMove,
-        resetGame,
-        getGameStatusMessage
+        currentPlayer: gameState.currentPlayer === 'X' ? 'O' : 'X',
+        board: newBoard,
+        gameStatus: newGameStatus,
+        winner
     }
 }
+
+export function getGameStatusMessage(gameState: GameState): String {    
+    if (gameState.gameStatus === 'tie') {
+        return "It's a tie!"
+    } else if (gameState.winner) {
+        return `Player ${gameState.winner} wins!`
+    }
+    return `Current player: ${gameState.currentPlayer}`
+}
+
+export function resetGame() {
+    return {
+        currentPlayer: 'X',
+        board: Array(9).fill(''),
+        gameStatus: 'in progress',
+        winner: undefined
+    }
+}
+
 
 export type { Player, Cell, GameState }

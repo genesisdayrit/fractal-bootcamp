@@ -1,13 +1,13 @@
+import { useState } from 'react'
+import { initialGameState, makeMove, getGameStatusMessage, resetGame, type GameState } from '../tictactoe'
 
-import { useGameState } from '../tictactoe'
 
 export default function Gameboard() {
-  const { gameState, makeMove, resetGame, getGameStatusMessage } = useGameState()
-
+  const [gameState, setGameState] = useState<GameState>(initialGameState())
   return (
     <>
       <h1>Tic-Tac-Toe</h1>
-      <h3>{getGameStatusMessage()}</h3>
+      <h3>{getGameStatusMessage(gameState)}</h3>
       <div className="
         grid grid-cols-3
         gap-[6px]             
@@ -20,7 +20,7 @@ export default function Gameboard() {
           <button 
             key={i} 
             className="bg-white aspect-square rounded-[2px]" 
-            onClick={() => makeMove(i)}
+            onClick={() => makeMove(gameState, i)}
           >
             {cell}
           </button>

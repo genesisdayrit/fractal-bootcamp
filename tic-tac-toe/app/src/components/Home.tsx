@@ -1,12 +1,6 @@
 import GamesList from './GamesList'
 import { useState, useEffect } from 'react'
 
-// fetch the games
-
-
-// function to fetch and display the games
-// be able to click into the games
-
 export default function Home() {
 
     const [games, setGames] = useState<string[]>([])
@@ -43,17 +37,29 @@ export default function Home() {
           }
 
     }
+
+    // TODO: Create Game Button should render new board with ID
+    // TODO: Clicking Games should be able to render the specific Game ID's game state
     
     return (
         <>
-            <h1>Tic Tac Toe Lobby</h1>
-            <h1 onClick={createGameClicked}>Create Game</h1>
-            <h1>This is the Games List</h1>
+            <div className="flex flex-col gap-4 min-h-screen justify-center items-center text-center">
+            <h1 className="text-4xl">Tic Tac Toe Lobby</h1>
+            <button 
+                onClick={createGameClicked} 
+                className="p-2 px-4 border rounded-lg bg-blue-300">
+                Create Game
+            </button>
+            <h1>This is the Games List:</h1>
+            <ul className="flex flex-col gap-4">
             {games.map((id) => (
                 <li key={id}>
-                    {id}
+                    <button className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
                 </li>
             ))}
+            </ul>
+            
+        </div>
         </>
     )
 }

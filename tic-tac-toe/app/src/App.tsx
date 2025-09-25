@@ -8,12 +8,12 @@ function App() {
 
   // hold state on selectedId, useState
 
-  // functioin idclick, when someone clicks an id update state
+  // TODO: add function idclick, when someone clicks an id update game id 
 
   return (
     <>
       <Home />
-      <Gameboard />
+      {/* <Gameboard /> */}
     </>
   )
 }

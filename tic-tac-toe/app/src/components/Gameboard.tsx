@@ -39,6 +39,7 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
     }
   }
 
+// sends post request and resets the gameState
 const resetGame = async (gameId: String) => {
   console.log('reset game clicked')
   let response = await fetch(`api/game/${gameId}/reset`, {

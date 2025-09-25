@@ -5,20 +5,9 @@ import { randomUUID } from 'crypto';
 
 const app = express();
 app.use(express.json())
-
-// list the games
-// let gameState  = initialGameState()
-
-// let {gameState: GameState} = initialGameState
-
-let games = new Map<string, GameState>()
-
-
 app.use((req,res,next)=>{ console.log(req.method, req.url); next(); })
 
-// add a /games endpoint to fetch all of the games and display in the server
-
-// add a /create endpoint to create a new game
+let games = new Map<string, GameState>()
 
 // create a game id and initial gamestate
 app.post("/api/create", (req, res) => {
@@ -48,22 +37,16 @@ app.get("/api/game/:id", (req, res) => {
         }
 })
 
+// test message
 app.get("/api/message", (_, res) => res.send("Hello from express!"));
 
-app.get("/api/game", (_, res) => res.json(gameState))
 
+// app.get("/api/game", (_, res) => res.json(gameState))
+
+// get games
 app.get("/api/games", (_, res) => res.json(Array.from(games.keys())))
 
-// Old api/move
-// app.post("/api/move", (req, res) => {
-//     const moveRequest = req.body
-//     const cellIndex = moveRequest.boardIndex
-//     gameState = makeMove(gameState, cellIndex)
-//     console.log('Data received:', moveRequest, gameState)
-//     res.json( {ok: true, gameState} )
-// })
-
-
+// update gameState for specific game id
 app.post("/api/game/:id/move", (req, res) => {
     const moveRequest = req.body
     const cellIndex = moveRequest.boardIndex
@@ -76,13 +59,6 @@ app.post("/api/game/:id/move", (req, res) => {
     console.log('Data received:', moveRequest, updatedGameState)
     res.json( {ok: true, updatedGameState} )
 })
-
-// Old Reset Game End point
-// app.post("/api/reset", (req, res) => {
-//     gameState = initialGameState()
-//     console.log('Reset request received', gameState)
-//     res.json( {ok: true, gameState} )
-// })
 
 app.post("/api/game/:id/reset", (req, res) => {
     const gameId = req.params.id

@@ -8,20 +8,10 @@ type GameState = {
     winner: Player | undefined
 }
 
-// add game id here
 type Game = {
     gameId: 'string', 
     gameState: GameState
 }
-
-// export const initialGameState: GameState = {
-//         currentPlayer: 'X',
-//         board: Array(9).fill(''),
-//         gameStatus: 'new game',
-//         winner: undefined
-//     }
-
-// updating this to a function
 
 export function initialGameState(): GameState {
     return {
@@ -31,7 +21,6 @@ export function initialGameState(): GameState {
     winner: undefined
     }
 }
-
 
 const winningCombinations = [
     // horizontal winners

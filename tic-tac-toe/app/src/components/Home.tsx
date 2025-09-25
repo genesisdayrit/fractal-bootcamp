@@ -35,6 +35,7 @@ export default function Home() {
           let result = await response.json()
           if (result.ok) {
             console.log(result)
+            setActiveGameID(result.id)
           }
     }
 

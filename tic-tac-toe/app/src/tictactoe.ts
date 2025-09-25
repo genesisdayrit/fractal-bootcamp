@@ -8,7 +8,7 @@ type GameState = {
 }
 
 export const initialGameState: GameState = {
-            currentPlayer: 'X',
+        currentPlayer: 'X',
         board: Array(9).fill(''),
         gameStatus: 'new game',
         winner: undefined

@@ -38,31 +38,13 @@ export default function Home() {
           }
     }
 
-    // when a user clicks the game, 
-    const joinGame = async (id: String) => {
-        console.log('Join Game button clicked')
-
-        let response = await fetch(`/api/game/${id}`)
-        let gameState = await response.json()
-
-        // set the active gameId
+    // when a user clicks join game, set the activeGameId
+    const joinGameClicked = async (id: String) => {
+        console.log(`Join Game button clicked. Active Game ID set to: ${id}`)
         setActiveGameID(id)
-        console.log(gameState)
-        console.log(id)
     }
 
-    // TODO: Create Game Button should render new board with ID
-    // TODO: Clicking Games should be able to render the specific Game ID's game state
-
-    // function Greeting({ isLoggedIn }) {
-    //     if (isLoggedIn) {
-    //       return <h1>Welcome back!</h1>;
-    //     } else {
-    //       return <h1>Please log in.</h1>;
-    //     }
-    //   }
-
-    // lobby
+    // if no activeGame ID, render the lobby
     if (!activeGameId) {
 
         return (
@@ -78,13 +60,15 @@ export default function Home() {
                 <ul className="flex flex-col gap-4">
                 {games.map((id) => (
                     <li key={id}>
-                        <button onClick={() => joinGame(id)} className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
+                        <button onClick={() => joinGameClicked(id)} className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
                     </li>
                 ))}
                 </ul>
             </div>
             </>
         )
+
+    // if there is an activeGameID, render the Gameboard component
     } else {
         return (
             <>

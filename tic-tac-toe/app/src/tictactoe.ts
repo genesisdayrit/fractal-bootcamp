@@ -1,5 +1,8 @@
 type Player = 'X' | 'O'
 type Cell = Player | ''
+
+// add game id here
+
 type GameState = {
     currentPlayer: Player
     board: Cell[]
@@ -82,5 +85,6 @@ export function getGameStatusMessage(gameState: GameState): String {
     }
     return `Current player: ${gameState.currentPlayer}`
 }
+
 
 export type { Player, Cell, GameState }

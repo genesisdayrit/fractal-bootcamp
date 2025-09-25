@@ -19,7 +19,7 @@ export default function Gameboard() {
   }
 
   const sendMove = async (cellIndex: Number) => {
-    console.log('clicked')
+    console.log('cell clicked')
     let response = await fetch('api/move', {
       method: "POST",
       headers: {"Content-Type": "application/json"},
@@ -31,8 +31,24 @@ export default function Gameboard() {
     if (result.ok) {
       console.log("Data sent sucessfully!", gameState)
       fetchGameState()
+      }
     }
-}
+  
+  const resetGame = async () => {
+    console.log('reset game clicked')
+    let response = await fetch('api/reset', {
+      method: "POST", 
+      headers: {"Content-Type": "application/json"}
+    })
+
+    let result = await response.json()
+    if (result.ok) {
+      fetchGameState()
+      console.log(gameState)
+    }
+  }
+  
+
   return (
     <>
       <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
@@ -52,7 +68,9 @@ export default function Gameboard() {
       </div>
       
       <button 
-        onClick={() => setGameState(initialGameState)}
+
+        // update this to reset initial state
+        onClick={resetGame}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
       >
         Reset Game

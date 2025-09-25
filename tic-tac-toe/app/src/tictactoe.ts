@@ -52,24 +52,24 @@ export function makeMove(gameState: GameState, cellIndex: number):GameState {
     }
 
     // if move is valid, update cell to the player and update game status
-    const newBoard = [...gameState.board]
-    newBoard[cellIndex] = gameState.currentPlayer
+    const updatedBoard = [...gameState.board]
+    updatedBoard[cellIndex] = gameState.currentPlayer
 
-    const { winner, isDraw } = checkWinner(newBoard)
+    const { winner, isDraw } = checkWinner(updatedBoard)
 
-    let newGameStatus: GameState['gameStatus']
+    let updatedGameStatus: GameState['gameStatus']
     if (winner) {
-        newGameStatus = winner
+        updatedGameStatus = winner
     } else if (isDraw) {
-        newGameStatus = 'tie'
+        updatedGameStatus = 'tie'
     } else {
-        newGameStatus = 'in progress'
+        updatedGameStatus = 'in progress'
     }
 
     return {
         currentPlayer: gameState.currentPlayer === 'X' ? 'O' : 'X',
-        board: newBoard,
-        gameStatus: newGameStatus,
+        board: updatedBoard,
+        gameStatus: updatedGameStatus,
         winner
     }
 }

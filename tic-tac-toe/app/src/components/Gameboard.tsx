@@ -2,22 +2,33 @@ import { useState, useEffect } from 'react'
 import { initialGameState, makeMove, getGameStatusMessage, type GameState } from '../tictactoe'
 
 
-export default function Gameboard() {
+export default function Gameboard(id: String) {
   
+  // const id = 
   const [gameState, setGameState] = useState<GameState>(initialGameState())
-  // const [activeGameId, setActiveGameID] = useState(null)
 
   useEffect(() => {
-    fetchGameState()
+    fetchGameState(id)
     console.log(gameState)
     }, []
   )
 
-  const fetchGameState = async () => {
-    let response = await fetch('/api/game')
-    let data = await response.json()
-    setGameState(data)
-  }
+  const fetchGameState = async (id: String) => {
+    console.log('Join Game button clicked')
+
+    let response = await fetch(`/api/game/${id}`)
+    let gameState = await response.json()
+
+    console.log(gameState)
+    console.log(id)
+}
+
+  // Old Global gameId
+  // const fetchGameState = async () => {
+  //   let response = await fetch('/api/game')
+  //   let data = await response.json()
+  //   setGameState(data)
+  // }
 
   const sendMove = async (cellIndex: Number) => {
     console.log('cell clicked')
@@ -54,7 +65,7 @@ export default function Gameboard() {
     
     <>
       <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
-      <h1>Tic-Tac-Toe</h1>
+      <h1>Active Game</h1>
       <h3>{getGameStatusMessage(gameState)}</h3>
       <div className="grid grid-cols-3 grid-rows-3 gap-0 w-[300px] mx-auto"
       >

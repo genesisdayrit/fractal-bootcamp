@@ -5,6 +5,7 @@ import { initialGameState, makeMove, getGameStatusMessage, type GameState } from
 export default function Gameboard() {
   
   const [gameState, setGameState] = useState<GameState>(initialGameState())
+  // const [activeGameId, setActiveGameID] = useState(null)
 
   useEffect(() => {
     fetchGameState()
@@ -48,8 +49,9 @@ export default function Gameboard() {
     }
   }
   
-
   return (
+    // if activeGameID is null, then render the lobby, if not render the active game
+    
     <>
       <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
       <h1>Tic-Tac-Toe</h1>
@@ -78,5 +80,4 @@ export default function Gameboard() {
       </div>
     </>
   )
-  
   }

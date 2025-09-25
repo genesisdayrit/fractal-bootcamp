@@ -35,7 +35,14 @@ export default function Home() {
           if (result.ok) {
             console.log(result)
           }
+    }
 
+    const joinGame = async (id: String) => {
+        console.log('Join Game button clicked')
+
+        let response = await fetch(`/api/game/${id}`)
+        let gameState = await response.json()
+        console.log(gameState)
     }
 
     // TODO: Create Game Button should render new board with ID
@@ -54,7 +61,7 @@ export default function Home() {
             <ul className="flex flex-col gap-4">
             {games.map((id) => (
                 <li key={id}>
-                    <button className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
+                    <button onClick={() => joinGame(id)} className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
                 </li>
             ))}
             </ul>

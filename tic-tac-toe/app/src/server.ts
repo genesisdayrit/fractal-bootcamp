@@ -35,14 +35,24 @@ app.post("/api/create", (req, res) => {
     res.json( {ok: true, id: gameId, boardState: gameState} )
 })
 
+// return the gameState for specific gameId
+app.get("/api/game/:id", (req, res) => {
+    // receive the game id from the component
+        const gameId = req.params.id
+        const gameState = games.get(gameId)
 
-
-// need add a /games/:id endpoing to fetch a single game
-
+        if (gameState) {
+            res.json(gameState)
+        } else {
+            res.status(404).send('Game not found')
+        }
+})
 
 app.get("/api/message", (_, res) => res.send("Hello from express!"));
 
 app.get("/api/game", (_, res) => res.json(gameState))
+
+
 
 app.get("/api/games", (_, res) => res.json(Array.from(games.keys())))
 

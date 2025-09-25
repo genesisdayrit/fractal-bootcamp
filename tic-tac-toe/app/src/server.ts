@@ -77,10 +77,23 @@ app.post("/api/game/:id/move", (req, res) => {
     res.json( {ok: true, updatedGameState} )
 })
 
-app.post("/api/reset", (req, res) => {
-    gameState = initialGameState()
+// Old Reset Game End point
+// app.post("/api/reset", (req, res) => {
+//     gameState = initialGameState()
+//     console.log('Reset request received', gameState)
+//     res.json( {ok: true, gameState} )
+// })
+
+app.post("/api/game/:id/reset", (req, res) => {
+    const gameId = req.params.id
+    const prev = games.get(gameId)
+    const gameState = initialGameState()
+    games.set(gameId, gameState)
+    console.log(prev)
     console.log('Reset request received', gameState)
     res.json( {ok: true, gameState} )
 })
+    
+
 
 ViteExpress.listen(app, 3000, () => console.log("Server is listening..."));

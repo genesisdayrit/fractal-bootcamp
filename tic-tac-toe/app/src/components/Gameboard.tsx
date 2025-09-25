@@ -39,11 +39,12 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
     }
   }
 
-const resetGame = async () => {
+const resetGame = async (gameId: String) => {
   console.log('reset game clicked')
-  let response = await fetch('api/reset', {
+  let response = await fetch(`api/game/${gameId}/reset`, {
     method: "POST", 
-    headers: {"Content-Type": "application/json"}
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ id: gameId})
   })
 
   let result = await response.json()
@@ -55,7 +56,6 @@ const resetGame = async () => {
 
 return (
   // if activeGameID is null, then render the lobby, if not render the active game
-  
   <>
     <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
     <h1>Active Game</h1>
@@ -76,7 +76,7 @@ return (
     <button 
 
       // update this to reset initial state
-      onClick={resetGame}
+      onClick={() => resetGame(id)}
       className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
     >
       Reset Game

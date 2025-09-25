@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json())
 
 // list the games
-let gameState  = initialGameState()
+// let gameState  = initialGameState()
 
 // let {gameState: GameState} = initialGameState
 
@@ -52,16 +52,29 @@ app.get("/api/message", (_, res) => res.send("Hello from express!"));
 
 app.get("/api/game", (_, res) => res.json(gameState))
 
-
-
 app.get("/api/games", (_, res) => res.json(Array.from(games.keys())))
 
-app.post("/api/move", (req, res) => {
+// Old api/move
+// app.post("/api/move", (req, res) => {
+//     const moveRequest = req.body
+//     const cellIndex = moveRequest.boardIndex
+//     gameState = makeMove(gameState, cellIndex)
+//     console.log('Data received:', moveRequest, gameState)
+//     res.json( {ok: true, gameState} )
+// })
+
+
+app.post("/api/game/:id/move", (req, res) => {
     const moveRequest = req.body
     const cellIndex = moveRequest.boardIndex
-    gameState = makeMove(gameState, cellIndex)
-    console.log('Data received:', moveRequest, gameState)
-    res.json( {ok: true, gameState} )
+    const gameId = moveRequest.id
+
+    const prev = games.get(gameId); if (!prev) return 404;
+    const updatedGameState = makeMove(prev, cellIndex); 
+    games.set(gameId, updatedGameState);
+
+    console.log('Data received:', moveRequest, updatedGameState)
+    res.json( {ok: true, updatedGameState} )
 })
 
 app.post("/api/reset", (req, res) => {

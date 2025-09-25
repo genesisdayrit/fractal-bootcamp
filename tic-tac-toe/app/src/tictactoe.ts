@@ -64,7 +64,7 @@ function checkWinner(board: Cell[]): { winner?: Player; isDraw: boolean } {
     return { winner: undefined, isDraw }
 }
 
-export function makeMove(gameState: GameState, cellIndex: number):GameState {
+export function makeMove(gameState: GameState, cellIndex: Number):GameState {
     // don't allow moves if game is over or cell is already filled = 
     if (gameState.gameStatus !== 'new game' && gameState.gameStatus !== 'in progress' || gameState.board[cellIndex] !== '' ) {
         return gameState

@@ -3,14 +3,12 @@ import { initialGameState, makeMove, getGameStatusMessage, type GameState } from
 
 
 export default function Gameboard(props) {
-  console.log(props)
-  const {id} = props
 
+const {id} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 
 useEffect(() => {
   fetchGameState()
-  // console.log(gameState)
   }, []
 )
 
@@ -20,24 +18,17 @@ const fetchGameState = async () => {
 
   let response = await fetch(`/api/game/${id}`)
   let gameState = await response.json()
-
-  // console.log(gameState)
-  // console.log(id)
+  setGameState(gameState)
+  console.log(gameState)
 }
 
-// Old Global gameId
-// const fetchGameState = async () => {
-//   let response = await fetch('/api/game')
-//   let data = await response.json()
-//   setGameState(data)
-// }
-
-const sendMove = async (cellIndex: Number) => {
+const sendMove = async (gameId: String, cellIndex: Number) => {
   console.log('cell clicked')
-  let response = await fetch('api/move', {
+  console.log(`cell clicked is ${gameId}`)
+  let response = await fetch(`/api/game/${id}/move`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({boardIndex: cellIndex})
+    body: JSON.stringify({boardIndex: cellIndex, id: gameId})
   })
 
   let result = await response.json()
@@ -75,7 +66,7 @@ return (
         <button 
           key={i} 
           className="flex items-center justify-center w-[100px] h-[100px] border-[4px] border-black bg-white text-4xl font-bold" 
-          onClick={() => sendMove(i)}
+          onClick={() => sendMove(id, i)}
         >
           {cell}
         </button>

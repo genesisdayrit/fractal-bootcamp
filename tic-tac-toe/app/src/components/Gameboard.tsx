@@ -4,7 +4,7 @@ import { initialGameState, makeMove, getGameStatusMessage, type GameState } from
 
 export default function Gameboard() {
   
-  const [gameState, setGameState] = useState<GameState>(initialGameState)
+  const [gameState, setGameState] = useState<GameState>(initialGameState())
 
   useEffect(() => {
     fetchGameState()

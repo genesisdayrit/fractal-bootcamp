@@ -1,8 +1,6 @@
 type Player = 'X' | 'O'
 type Cell = Player | ''
 
-// add game id here
-
 type GameState = {
     currentPlayer: Player
     board: Cell[]
@@ -10,12 +8,30 @@ type GameState = {
     winner: Player | undefined
 }
 
-export const initialGameState: GameState = {
-        currentPlayer: 'X',
-        board: Array(9).fill(''),
-        gameStatus: 'new game',
-        winner: undefined
+// add game id here
+type Game = {
+    gameId: 'string', 
+    gameState: GameState
+}
+
+// export const initialGameState: GameState = {
+//         currentPlayer: 'X',
+//         board: Array(9).fill(''),
+//         gameStatus: 'new game',
+//         winner: undefined
+//     }
+
+// updating this to a function
+
+export function initialGameState(): GameState {
+    return {
+    currentPlayer: 'X',
+    board: Array(9).fill(''),
+    gameStatus: 'new game',
+    winner: undefined
     }
+}
+
 
 const winningCombinations = [
     // horizontal winners

@@ -3,13 +3,13 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { db } from './db/index'
-import { fetchGameIds } from './db/queries';
+import { fetchGameIds, testConnection } from './db/queries';
 import { gamesTable } from './db/schema'
 
-async function testConnection() {
-    try {
-        const games = await db.select().from(gamesTable);
-        console.log('Successfully connected to supabase and fetched data:', games)
+// async function testConnection() {
+//     try {
+//         const games = await db.select().from(gamesTable);
+//         console.log('Successfully connected to supabase and fetched data:', games)
 
         // await db.insert(gamesTable).values(
         //     { 
@@ -23,14 +23,16 @@ async function testConnection() {
         //     });
         // console.log('Successfully inserted data.');
 
-    } catch (error) {
-        console.error('Error connecting to Supabase with Drizzle:', error)
-    } finally {
+//     } catch (error) {
+//         console.error('Error connecting to Supabase with Drizzle:', error)
+//     } finally {
 
-    }
-}
+//     }
+// }
 
-testConnection();
+// testConnection();
+
+testConnection()
 
 const app = express();
 app.use(express.json())

@@ -2,6 +2,18 @@ import { db } from './index'
 import { sql } from 'drizzle-orm';
 import { AnyPgTable } from "drizzle-orm/pg-core";
 
+export const testConnection = async (table: AnyPgTable) => {
+    try {
+
+        const rawStatement = sql`SELECT 1 FROM games`
+        const result = await db.execute(rawStatement)
+        console.log('Supabase Successfully Connected')
+        return result
+    } catch (error) {
+        console.log('Error testing Supabase connection', error)
+    }
+}
+
 export const fetchGameIds = async (table: AnyPgTable) => {
     try {
         
@@ -11,6 +23,6 @@ export const fetchGameIds = async (table: AnyPgTable) => {
 
         return gameIds
     } catch (error) {
-        console.error('Error connecting to Supabase with Drizzle:', error)
+        console.error('Error fetching Game IDs:', error)
     } finally {}
 }

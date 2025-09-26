@@ -2,7 +2,7 @@ import { db } from './index'
 import { sql } from 'drizzle-orm';
 import { AnyPgTable } from "drizzle-orm/pg-core";
 
-export const testConnection = async (table: AnyPgTable) => {
+export const testConnection = async () => {
     try {
 
         const rawStatement = sql`SELECT 1 FROM games`
@@ -14,11 +14,24 @@ export const testConnection = async (table: AnyPgTable) => {
     }
 }
 
-export const fetchGameIds = async (table: AnyPgTable) => {
+export const fetchGameIds = async () => {
     try {
         
         const rawStatement = sql`SELECT id FROM games ORDER BY updated_at DESC`
         const rows = await db.execute(rawStatement)
+        const gameIds = rows.map(row => row.id)
+
+        return gameIds
+    } catch (error) {
+        console.error('Error fetching Game IDs:', error)
+    } finally {}
+}
+
+export const fetchGame = async (id: String) => {
+    try {
+        
+        const rawStatement = sql`SELECT * FROM games WHERE id = ${id}`
+        const result = await db.execute(rawStatement)
         const gameIds = rows.map(row => row.id)
 
         return gameIds

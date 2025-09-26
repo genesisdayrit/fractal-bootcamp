@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
-import GameBoard from './GameBoard'
+import GameBoard from './Gameboard'
 
 export default function Home() {
 
-    const [games, setGames] = useState<String[]>([])
-    const [activeGameId, setActiveGameId] = useState<String>(null)
+    type ActiveGameId = string | null
+
+    const [games, setGames] = useState<string[]>([])
+    const [activeGameId, setActiveGameId] = useState<ActiveGameId>(null)
 
     // initiate fetch games on page load
     useEffect(() => {
@@ -40,7 +42,7 @@ export default function Home() {
     }
 
     // when a user clicks join game, set the activeGameId
-    const joinGameClicked = async (id: String) => {
+    const joinGameClicked = async (id: string) => {
         console.log(`Join Game button clicked. Active Game ID set to: ${id}`)
         setActiveGameId(id)
     }

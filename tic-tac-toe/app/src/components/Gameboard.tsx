@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react'
-import { initialGameState, makeMove, getGameStatusMessage, type GameState } from '../tictactoe'
+import { initialGameState, getGameStatusMessage, type GameState } from '../tictactoe'
 
+type GameboardProps = {
+  id: string
+  backToLobbyClicked: () => void
+}
 
-export default function Gameboard(props) {
+export default function Gameboard(props: GameboardProps) {
 
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())

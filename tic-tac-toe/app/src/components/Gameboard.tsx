@@ -4,7 +4,7 @@ import { initialGameState, makeMove, getGameStatusMessage, type GameState } from
 
 export default function Gameboard(props) {
 
-const {id} = props
+const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 
 useEffect(() => {
@@ -73,15 +73,24 @@ return (
         </button>
       ))}
     </div>
-    
-    <button 
 
+    <div className="flex gap-4">
+    <button 
+      // backToLobby from props updates activeGameId = null
+      onClick={backToLobbyClicked}
+      className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+      Back to Lobby
+    </button>
+    <button 
       // update this to reset initial state
       onClick={() => resetGame(id)}
       className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-    >
+      >
       Reset Game
     </button>
+    </div>
+    
     </div>
   </>
 )

@@ -4,7 +4,7 @@ import GameBoard from './GameBoard'
 export default function Home() {
 
     const [games, setGames] = useState<String[]>([])
-    const [activeGameId, setActiveGameID] = useState<String>(null)
+    const [activeGameId, setActiveGameId] = useState<String>(null)
 
     // initiate fetch games on page load
     useEffect(() => {
@@ -35,14 +35,19 @@ export default function Home() {
           let result = await response.json()
           if (result.ok) {
             console.log(result)
-            setActiveGameID(result.id)
+            setActiveGameId(result.id)
           }
     }
 
     // when a user clicks join game, set the activeGameId
     const joinGameClicked = async (id: String) => {
         console.log(`Join Game button clicked. Active Game ID set to: ${id}`)
-        setActiveGameID(id)
+        setActiveGameId(id)
+    }
+
+    const backToLobbyClicked = () => {
+        setActiveGameId(null)
+        fetchGames()
     }
 
     // if no activeGame ID, render the lobby
@@ -73,7 +78,7 @@ export default function Home() {
     } else {
         return (
             <>
-            <GameBoard id={activeGameId} />
+            <GameBoard id={activeGameId} backToLobbyClicked={backToLobbyClicked} />
             </>
         )
     }

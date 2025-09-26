@@ -5,10 +5,29 @@ import { randomUUID } from 'crypto';
 import { db } from './db/index'
 import { gamesTable } from './db/schema'
 
+
+// currentPlayer: text('current_player').notNull(),
+//     winner: text('winner'),
+//     createdAt: timestamp('created_at').notNull().defaultNow(),
+//     updatedAt: timestamp('updated_at')
+
 async function testConnection() {
     try {
         const games = await db.select().from(gamesTable);
         console.log('Successfully connected to supabase and fetched data:', games)
+
+        await db.insert(gamesTable).values(
+            { 
+                id: randomUUID(),
+                board: [Array(9).fill('')],
+                gameStatus: 'new game',
+                currentPlayer: 'X',
+                winner: null,
+                // createdAt: new Date(),
+                updatedAt: new Date()  
+            });
+        console.log('Successfully inserted data.');
+
     } catch (error) {
         console.error('Error connecting to Supabase with Drizzle:', error)
     } finally {

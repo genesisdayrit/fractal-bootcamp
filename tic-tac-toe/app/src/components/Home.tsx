@@ -45,6 +45,11 @@ export default function Home() {
         setActiveGameId(id)
     }
 
+    const backToLobbyClicked = () => {
+        setActiveGameId(null)
+        fetchGames()
+    }
+
     // if no activeGame ID, render the lobby
     if (!activeGameId) {
 
@@ -73,7 +78,7 @@ export default function Home() {
     } else {
         return (
             <>
-            <GameBoard id={activeGameId} backToLobby={() => setActiveGameId(null)}  />
+            <GameBoard id={activeGameId} backToLobbyClicked={backToLobbyClicked} />
             </>
         )
     }

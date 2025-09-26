@@ -3,7 +3,7 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { db } from './db/index'
-import { fetchGameIds, testConnection } from './db/queries';
+import { testConnection, fetchGameIds, fetchGame } from './db/queries';
 import { gamesTable } from './db/schema'
 
 // Check for successful supabase connection
@@ -29,18 +29,35 @@ app.post("/api/create", (req: Request, res: Response) => {
     res.json( {ok: true, id: gameId, boardState: gameState} )
 })
 
+// Old return gameState
 // return the gameState for specific gameId
-app.get("/api/game/:id", (req: Request, res: Response) => {
+// app.get("/api/game/:id", (req: Request, res: Response) => {
+//     // receive the game id from the component
+//         const gameId = req.params.id
+//         const gameState = games.get(gameId)
+
+//         if (gameState) {
+//             res.json(gameState)
+//         } else {
+//             res.status(404).send('Game not found')
+//         }
+// })
+
+
+app.get("/api/game/:id", async (req: Request, res: Response) => {
     // receive the game id from the component
         const gameId = req.params.id
-        const gameState = games.get(gameId)
-
-        if (gameState) {
+        try {
+            const gameState = await fetchGame(gameId)
             res.json(gameState)
-        } else {
-            res.status(404).send('Game not found')
+            console.log("Fetched Game State:", gameState)
+
+        } catch (error) {
+            console.error("Error:", error)
+            res.status(500).json({'Failed to retrieve data': error})
         }
 })
+
 
 // test message
 app.get("/api/message", (req: Request, res: Response) => res.send("Hello from express!"));
@@ -49,7 +66,7 @@ app.get("/api/message", (req: Request, res: Response) => res.send("Hello from ex
 // get gameIds
 app.get("/api/games", async (req: Request, res: Response) => {
     try {
-        const result = await fetchGameIds(games)
+        const result = await fetchGameIds()
         res.json(result)
         console.log("Fetch Game ID's:", result);
     } catch (error) {

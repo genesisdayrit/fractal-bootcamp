@@ -11,10 +11,10 @@ export default function Gameboard(props: GameboardProps) {
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 
-useEffect(() => {
-  fetchGameState()
-  }, []
-)
+// useEffect(() => {
+//   fetchGameState()
+//   }, []
+// )
 
 const fetchGameState = async () => {
 

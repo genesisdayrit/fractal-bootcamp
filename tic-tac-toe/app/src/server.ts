@@ -3,43 +3,8 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { db } from './db/index'
+import { fetchGameIds } from './db/queries';
 import { gamesTable } from './db/schema'
-
-
-// currentPlayer: text('current_player').notNull(),
-//     winner: text('winner'),
-//     createdAt: timestamp('created_at').notNull().defaultNow(),
-//     updatedAt: timestamp('updated_at')
-
-async function fetchGameIds(): Promise<string[]> {
-    try {
-        const rows = await db.select({id: gamesTable.id}
-        ).from(gamesTable);
-
-        const gameIds = rows.map(r => r.id)
-        console.log('Successfully connected to supabase and fetched data:', gameIds)
-
-        console.log('request received')
-
-        return gameIds
-        // await db.insert(gamesTable).values(
-        //     { 
-        //         id: randomUUID(),
-        //         board: [Array(9).fill('')],
-        //         gameStatus: 'new game',
-        //         currentPlayer: 'X',
-        //         winner: null,
-        //         // createdAt: new Date(),
-        //         updatedAt: new Date()  
-        //     });
-        // console.log('Successfully inserted data.');
-
-    } catch (error) {
-        console.error('Error connecting to Supabase with Drizzle:', error)
-    } finally {}
-}
-
-// getGameIds()
 
 async function testConnection() {
     try {
@@ -104,16 +69,12 @@ app.get("/api/game/:id", (req: Request, res: Response) => {
 app.get("/api/message", (req: Request, res: Response) => res.send("Hello from express!"));
 
 
-// app.get("/api/game", (_, res) => res.json(gameState))
-
-// get games
-// app.get("/api/games", (req: Request, res: Response) => res.json(Array.from(games.keys())))
-// app.get("/api/games", (req: Request, res: Response) => res.send(getGameIds))
-
+// get gameIds
 app.get("/api/games", async (req: Request, res: Response) => {
     try {
-        const result = await fetchGameIds()
+        const result = await fetchGameIds(games)
         res.json(result)
+        console.log("Fetch Game ID's:", result);
     } catch (error) {
         console.error("Error:", error)
         res.status(500).json({'Failed to retrieve data': error})

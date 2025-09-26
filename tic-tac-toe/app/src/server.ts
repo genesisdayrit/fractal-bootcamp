@@ -11,16 +11,17 @@ import { gamesTable } from './db/schema'
 //     createdAt: timestamp('created_at').notNull().defaultNow(),
 //     updatedAt: timestamp('updated_at')
 
-
-const getGameIds = async () => {
-    
-
+async function fetchGameIds(): Promise<string[]> {
     try {
-        const gameIds = await db.select({id: gamesTable.id}
+        const rows = await db.select({id: gamesTable.id}
         ).from(gamesTable);
 
+        const gameIds = rows.map(r => r.id)
         console.log('Successfully connected to supabase and fetched data:', gameIds)
 
+        console.log('request received')
+
+        return gameIds
         // await db.insert(gamesTable).values(
         //     { 
         //         id: randomUUID(),
@@ -35,11 +36,10 @@ const getGameIds = async () => {
 
     } catch (error) {
         console.error('Error connecting to Supabase with Drizzle:', error)
-    } finally {// close connection }
-}
+    } finally {}
 }
 
-getGameIds()
+// getGameIds()
 
 async function testConnection() {
     try {
@@ -107,7 +107,18 @@ app.get("/api/message", (req: Request, res: Response) => res.send("Hello from ex
 // app.get("/api/game", (_, res) => res.json(gameState))
 
 // get games
-app.get("/api/games", (req: Request, res: Response) => res.json(Array.from(games.keys())))
+// app.get("/api/games", (req: Request, res: Response) => res.json(Array.from(games.keys())))
+// app.get("/api/games", (req: Request, res: Response) => res.send(getGameIds))
+
+app.get("/api/games", async (req: Request, res: Response) => {
+    try {
+        const result = await fetchGameIds()
+        res.json(result)
+    } catch (error) {
+        console.error("Error:", error)
+        res.status(500).json({'Failed to retrieve data': error})
+    }
+})
 
 // update gameState for specific game id
 app.post("/api/game/:id/move", (req: Request, res: Response) => {

@@ -2,6 +2,37 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
+import { db } from './db/index'
+import { fetchGameIds, testConnection } from './db/queries';
+import { gamesTable } from './db/schema'
+
+// async function testConnection() {
+//     try {
+//         const games = await db.select().from(gamesTable);
+//         console.log('Successfully connected to supabase and fetched data:', games)
+
+        // await db.insert(gamesTable).values(
+        //     { 
+        //         id: randomUUID(),
+        //         board: [Array(9).fill('')],
+        //         gameStatus: 'new game',
+        //         currentPlayer: 'X',
+        //         winner: null,
+        //         // createdAt: new Date(),
+        //         updatedAt: new Date()  
+        //     });
+        // console.log('Successfully inserted data.');
+
+//     } catch (error) {
+//         console.error('Error connecting to Supabase with Drizzle:', error)
+//     } finally {
+
+//     }
+// }
+
+// testConnection();
+
+testConnection()
 
 const app = express();
 app.use(express.json())
@@ -40,15 +71,22 @@ app.get("/api/game/:id", (req: Request, res: Response) => {
 app.get("/api/message", (req: Request, res: Response) => res.send("Hello from express!"));
 
 
-// app.get("/api/game", (_, res) => res.json(gameState))
-
-// get games
-app.get("/api/games", (req: Request, res: Response) => res.json(Array.from(games.keys())))
+// get gameIds
+app.get("/api/games", async (req: Request, res: Response) => {
+    try {
+        const result = await fetchGameIds(games)
+        res.json(result)
+        console.log("Fetch Game ID's:", result);
+    } catch (error) {
+        console.error("Error:", error)
+        res.status(500).json({'Failed to retrieve data': error})
+    }
+})
 
 // update gameState for specific game id
 app.post("/api/game/:id/move", (req: Request, res: Response) => {
     const moveRequest = req.body
-    const cellIndex = moveRequest.boardIndex
+    const cellIndex = moveRequest.cellPosition
     const gameId = moveRequest.id
 
     const prev = games.get(gameId); if (!prev) return 404;

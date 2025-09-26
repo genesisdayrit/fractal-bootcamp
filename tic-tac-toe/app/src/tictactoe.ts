@@ -5,7 +5,7 @@ type GameState = {
     currentPlayer: Player
     board: Cell[]
     gameStatus: 'new game'| 'X' | 'O' | 'tie' | 'in progress'
-    winner: Player | undefined
+    winner: Player | undefined | null
 }
 
 type Game = {

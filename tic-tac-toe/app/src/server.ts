@@ -2,6 +2,21 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
+import { db } from './db/index'
+import { gamesTable } from './db/schema'
+
+async function testConnection() {
+    try {
+        const games = await db.select().from(gamesTable);
+        console.log('Successfully connected to supabase and fetched data:', games)
+    } catch (error) {
+        console.error('Error connecting to Supabase with Drizzle:', error)
+    } finally {
+
+    }
+}
+
+testConnection();
 
 const app = express();
 app.use(express.json())

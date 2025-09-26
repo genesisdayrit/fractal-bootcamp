@@ -58,13 +58,13 @@ export default function Home() {
         return (
             <>
                 <div className="flex flex-col gap-4 min-h-screen justify-center items-center text-center">
-                <h1 className="text-4xl">Tic Tac Toe Lobby</h1>
+                <h1 className="text-4xl text-yellow-300">Tic Tac Toe Lobby</h1>
                 <button 
                     onClick={createGameClicked} 
-                    className="p-2 px-4 border rounded-lg bg-blue-300">
+                    className="p-2 px-4 border rounded-lg bg-blue-300 mb-10">
                     Create Game
                 </button>
-                <h1>This is the Games List:</h1>
+                <h1 className="text-yellow-300">This is the Games List:</h1>
                 <ul className="flex flex-col gap-4">
                 {games.map((id) => (
                     <li key={id}>

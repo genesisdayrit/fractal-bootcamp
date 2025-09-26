@@ -4,15 +4,11 @@ import Home from './components/Home'
 
 function App() {
 
-
-  // hold state on selectedId, useState
-
-  // TODO: add function idclick, when someone clicks an id update game id 
-
   return (
     <>
+    <div className="bg-blue-700">
       <Home />
-      {/* <Gameboard /> */}
+    </div>
     </>
   )
 }

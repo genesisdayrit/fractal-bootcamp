@@ -62,9 +62,9 @@ const resetGame = async (gameId: String) => {
 return (
   // if activeGameID is null, then render the lobby, if not render the active game
   <>
-    <div className="flex flex-col items-center bg-gray-100 justify-center space-y-4">
-    <h1>Active Game</h1>
-    <h3>{getGameStatusMessage(gameState)}</h3>
+    <div className="flex flex-col gap-4 items-center justify-center min-h-screen">
+    <h1 className="text-xl text-center text-yellow-300">Active Game ID: <br /> {id} </h1>
+    <h3 className="text-yellow-200">{getGameStatusMessage(gameState)}</h3>
     <div className="grid grid-cols-3 grid-rows-3 gap-0 w-[300px] mx-auto"
     >
       {gameState.board.map((cell, i) => (

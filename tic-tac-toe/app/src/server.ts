@@ -11,22 +11,52 @@ import { gamesTable } from './db/schema'
 //     createdAt: timestamp('created_at').notNull().defaultNow(),
 //     updatedAt: timestamp('updated_at')
 
+
+const getGameIds = async () => {
+    
+
+    try {
+        const gameIds = await db.select({id: gamesTable.id}
+        ).from(gamesTable);
+
+        console.log('Successfully connected to supabase and fetched data:', gameIds)
+
+        // await db.insert(gamesTable).values(
+        //     { 
+        //         id: randomUUID(),
+        //         board: [Array(9).fill('')],
+        //         gameStatus: 'new game',
+        //         currentPlayer: 'X',
+        //         winner: null,
+        //         // createdAt: new Date(),
+        //         updatedAt: new Date()  
+        //     });
+        // console.log('Successfully inserted data.');
+
+    } catch (error) {
+        console.error('Error connecting to Supabase with Drizzle:', error)
+    } finally {// close connection }
+}
+}
+
+getGameIds()
+
 async function testConnection() {
     try {
         const games = await db.select().from(gamesTable);
         console.log('Successfully connected to supabase and fetched data:', games)
 
-        await db.insert(gamesTable).values(
-            { 
-                id: randomUUID(),
-                board: [Array(9).fill('')],
-                gameStatus: 'new game',
-                currentPlayer: 'X',
-                winner: null,
-                // createdAt: new Date(),
-                updatedAt: new Date()  
-            });
-        console.log('Successfully inserted data.');
+        // await db.insert(gamesTable).values(
+        //     { 
+        //         id: randomUUID(),
+        //         board: [Array(9).fill('')],
+        //         gameStatus: 'new game',
+        //         currentPlayer: 'X',
+        //         winner: null,
+        //         // createdAt: new Date(),
+        //         updatedAt: new Date()  
+        //     });
+        // console.log('Successfully inserted data.');
 
     } catch (error) {
         console.error('Error connecting to Supabase with Drizzle:', error)
@@ -82,7 +112,7 @@ app.get("/api/games", (req: Request, res: Response) => res.json(Array.from(games
 // update gameState for specific game id
 app.post("/api/game/:id/move", (req: Request, res: Response) => {
     const moveRequest = req.body
-    const cellIndex = moveRequest.boardIndex
+    const cellIndex = moveRequest.cellPosition
     const gameId = moveRequest.id
 
     const prev = games.get(gameId); if (!prev) return 404;

@@ -61,14 +61,14 @@ export default function Home() {
                 <h1 className="text-4xl text-yellow-300">Tic Tac Toe Lobby</h1>
                 <button 
                     onClick={createGameClicked} 
-                    className="p-2 px-4 border rounded-lg bg-blue-300 mb-10">
+                    className="p-2 px-4 border rounded-lg bg-blue-300 hover:bg-blue-400 mb-10">
                     Create Game
                 </button>
                 <h1 className="text-yellow-300">This is the Games List:</h1>
                 <ul className="flex flex-col gap-4">
                 {games.map((id) => (
                     <li key={id}>
-                        <button onClick={() => joinGameClicked(id)} className="p-2 px-4 border rounded-lg bg-gray-300 ">Join Game: {id}</button>
+                        <button onClick={() => joinGameClicked(id)} className="p-2 px-4 border rounded-lg bg-gray-300 hover:bg-gray-400 ">Join Game: {id}</button>
                     </li>
                 ))}
                 </ul>

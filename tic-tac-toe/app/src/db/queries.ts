@@ -27,6 +27,7 @@ export const fetchGameIds = async () => {
         return gameIds
     } catch (error) {
         console.error('Error fetching Game IDs:', error)
+        throw error
     } finally {}
 }
 
@@ -46,5 +47,6 @@ export const fetchGame = async (id: String) => {
         return gameState
     } catch (error) {
         console.error('Error fetching Game ID:', error)
+        throw error
     } finally {}
 }

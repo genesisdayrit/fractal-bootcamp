@@ -161,8 +161,8 @@ app.post('/api/recommend-move', async (req, res) => {
         const openaiResponse = completion.choices[0].message.content;
 
         const parseRecommendedMovePrompt = `You are helping recommend a tic-tac-toe move. 
-        Based on the response from ${openaiResponse}, please return just the concise recommended 
-        answer to pass back to the user. 
+        Based on the response from ${openaiResponse}, please return just the concise recommendeded 
+        answe rto pass back to the user including the player (e.g. X to Middle Bottom Row). 
         `
 
         const parsedResponseCompletion = await openai.chat.completions.create({

@@ -11,10 +11,10 @@ export default function Gameboard(props: GameboardProps) {
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 
-// useEffect(() => {
-//   fetchGameState()
-//   }, []
-// )
+useEffect(() => {
+  fetchGameState()
+  }, []
+)
 
 const fetchGameState = async () => {
 
@@ -28,11 +28,11 @@ const fetchGameState = async () => {
 
 const sendMove = async (gameId: String, cellIndex: Number) => {
   console.log('cell clicked')
-  console.log(`cell clicked is ${gameId}`)
+  console.log(`Game ${gameId} Updated`)
   let response = await fetch(`/api/game/${id}/move`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({cellPosition: cellIndex, id: gameId})
+    body: JSON.stringify({cellPosition: cellIndex, id: gameId, gameState: gameState})
   })
 
   let result = await response.json()

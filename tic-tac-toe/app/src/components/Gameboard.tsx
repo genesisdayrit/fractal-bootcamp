@@ -102,7 +102,7 @@ return (
       {gameState.board.map((cell, i) => (
         <button 
           key={i} 
-          className="flex items-center justify-center w-[100px] h-[100px] border-[4px] border-black bg-white hover:shadow- xl shadow-yellow-200 text-4xl font-bold" 
+          className="flex items-center justify-center w-[100px] h-[100px] border-[4px] border-black bg-white hover:shadow-xl shadow-yellow-200 text-4xl font-bold" 
           onClick={() => sendMove(id, i)}
         >
           {cell}

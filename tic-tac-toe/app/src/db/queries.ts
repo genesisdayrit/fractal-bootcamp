@@ -1,6 +1,6 @@
 import { db } from './index'
 import { sql, eq } from 'drizzle-orm';
-import { gamesTable } from './schema';
+import { gamesTable, gameMovesTable } from './schema';
 import { type GameState } from '../tictactoe'
 
 // test supabase connection
@@ -94,3 +94,20 @@ export const updateGameState = async (id: string, gameState: GameState) => {
         throw error
     }
 }
+
+
+export const fetchGameMoves = async (gameId: string) => {
+    try {
+        const result = await db
+            .select()
+            .from(gameMovesTable)
+            .where(eq(gameMovesTable.gameId, gameId))
+            .orderBy(gameMovesTable.gameMoveNum);
+        
+        console.log('Game Moves:', result);
+        return result;
+    } catch (error) {
+        console.error('error fetching game moves:', error);
+        throw error;
+    }
+};

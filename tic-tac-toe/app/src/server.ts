@@ -2,9 +2,7 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
-import { db } from './db/index'
-import { testConnection, fetchGames, fetchGame, updateGameState, createGame } from './db/queries';
-import { gamesTable } from './db/schema'
+import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves } from './db/queries';
 
 // Check for successful supabase connection
 testConnection()
@@ -35,6 +33,21 @@ app.get("/api/game/:id", async (req: Request, res: Response) => {
             const gameState = await fetchGame(gameId)
             res.json(gameState)
             console.log("Fetched Game State:", gameState)
+
+        } catch (error) {
+            console.error("Error:", error)
+            res.status(500).json({'Failed to retrieve data': error})
+        }
+})
+
+// get game moves for game id
+app.get("/api/game/:id/game-moves", async (req: Request, res: Response) => {
+    // receive the game id from the component
+        const gameId = req.params.id
+        try {
+            const gameMoves = await fetchGameMoves(gameId)
+            res.json(gameMoves)
+            console.log("Fetched Game State:", gameMoves)
 
         } catch (error) {
             console.error("Error:", error)

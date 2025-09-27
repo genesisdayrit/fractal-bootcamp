@@ -140,9 +140,12 @@ return (
         ))}
       </div>
     </div>
-    <div>
+    <div className="flex flex-col justify-center items-center mt-4 gap-4 w-2/5 bg-gray-200 border rounded-lg">
       <h1>AI Response</h1>
       <p>{aiResponse}</p>
+      <button onClick={()=>setAiResponse('')} className="px-4 py-2 bg-gray-400">
+          Clear Response
+        </button>
     </div>
     </div>
   </>

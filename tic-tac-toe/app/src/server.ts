@@ -3,6 +3,14 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves, createGameMove, getMoveNumber, deleteGameMoves } from './db/queries';
+import OpenAI from 'openai';
+require('dotenv').config();
+
+// const openai = new OpenAI();
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
 
 // Check for successful supabase connection
 testConnection()
@@ -127,6 +135,35 @@ app.post("/api/game/:id/reset", async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Failed to reset game', details: error })
     }
     
+})
+
+app.post('/api/recommend-move', async (req, res) => {
+    const { boardState, currentPlayer } = req.body; 
+
+    console.log(req.body)
+    const systemPrompt = `You are a tic-tac toe playing expert, the current state of the board is ${boardState} 
+    and the current player to move is ${currentPlayer}. Please recommend a next move and explain your reasoning. 
+    Speak in terms of human decipherable language (top-left, center, bottom-right, etc.) instead of cell array positions.`
+
+    if (!boardState || !currentPlayer) {
+        return res.status(400).json({error: 'Board State not available'})
+    }
+    try {
+        console.log(`Attempting AI Response for ${systemPrompt}`)
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4o',
+            messages: [{ role: 'user', content: systemPrompt }],
+            max_tokens: 400
+        })
+
+        console.log(completion)
+
+        const openaiResponse = completion.choices[0].message.content;
+        res.status(200).json({ok: true, recommendedAction: openaiResponse})
+
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get OpenAI response'})
+    }
 })
     
 

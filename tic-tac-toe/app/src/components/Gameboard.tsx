@@ -11,6 +11,7 @@ export default function Gameboard(props: GameboardProps) {
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 const [gameMoves, setGameMoves] = useState([])
+const [aiResponse, setAiResponse] = useState('')
 
 useEffect(() => {
   fetchGameState()
@@ -52,6 +53,24 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
     fetchGameMoves()
     }
   }
+
+const handleAiRequest = async (boardState: [], currentPlayer: string) => {
+  let response = await fetch('/api/recommend-move', {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({boardState: boardState, currentPlayer: currentPlayer})
+  })
+  
+  let result = await response.json()
+
+  if (result.ok) {
+    console.log('OpenAI Response:', result)
+    let aiResponse = result.recommendedAction
+    setAiResponse(aiResponse)
+  }
+}
+
+
 
 // sends post request and resets the gameState
 const resetGame = async (gameId: String) => {
@@ -105,7 +124,10 @@ return (
       Reset Game
     </button>
     </div>
-    <button className="mt-4 px-4 py-2 bg-orange-700 text-white rounded hover:bg-blue-600">
+    <button 
+      className="mt-4 px-4 py-2 bg-orange-700 text-white rounded hover:bg-blue-600"
+      onClick={() => handleAiRequest(gameState.board, gameState.currentPlayer)}
+    >
       Recommend Move
     </button>
     <div className="mt-4">
@@ -117,6 +139,10 @@ return (
           </div>
         ))}
       </div>
+    </div>
+    <div>
+      <h1>AI Response</h1>
+      <p>{aiResponse}</p>
     </div>
     </div>
   </>

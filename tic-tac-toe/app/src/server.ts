@@ -47,7 +47,7 @@ app.get("/api/game/:id/game-moves", async (req: Request, res: Response) => {
         try {
             const gameMoves = await fetchGameMoves(gameId)
             res.json(gameMoves)
-            console.log("Fetched Game State:", gameMoves)
+            console.log("Fetched Game Moves:", gameMoves)
 
         } catch (error) {
             console.error("Error:", error)

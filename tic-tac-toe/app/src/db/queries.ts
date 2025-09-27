@@ -1,7 +1,7 @@
 import { db } from './index'
 import { sql, eq } from 'drizzle-orm';
 import { gamesTable } from './schema';
-import type { GameState } from '../tictactoe'
+import { type GameState } from '../tictactoe'
 
 // test supabase connection
 export const testConnection = async () => {
@@ -14,6 +14,34 @@ export const testConnection = async () => {
         return result
     } catch (error) {
         console.log('Error testing Supabase connection', error)
+    }
+}
+
+    // currentPlayer: 'X',
+    // board: Array(9).fill(''),
+    // gameStatus: 'new game',
+    // winner: null
+
+export const createGame = async (id: string, initialGameState: GameState) => {
+    try {
+        const {currentPlayer, board, gameStatus, winner } = initialGameState
+        const gameId = id
+        const result = await db.insert(gamesTable).values({
+             id: gameId,
+             board: board,
+             gameStatus: gameStatus,
+             currentPlayer: currentPlayer,
+             winner: winner,
+             createdAt: new Date(),
+             updatedAt: new Date(),
+            }).returning()
+            
+            const newGameRecord = result[0]
+            console.log('Game created successfully:', newGameRecord)
+            return newGameRecord
+    } catch (error) {
+    console.error('error creating game:', error)
+    throw error
     }
 }
 

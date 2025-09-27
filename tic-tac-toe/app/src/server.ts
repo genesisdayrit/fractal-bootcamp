@@ -3,7 +3,7 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { db } from './db/index'
-import { testConnection, fetchGameIds, fetchGame, updateGameState } from './db/queries';
+import { testConnection, fetchGameIds, fetchGame, updateGameState, createGame } from './db/queries';
 import { gamesTable } from './db/schema'
 
 // Check for successful supabase connection
@@ -21,9 +21,9 @@ app.post("/api/create", (req: Request, res: Response) => {
 
     // set an initial game state
     let gameState = initialGameState()
-    games.set(gameId, gameState)
+
+    createGame(gameId, gameState)
     console.log(gameId)
-    console.log(games)
 
     // send an object back with the id and boardstate
     res.json( {ok: true, id: gameId, boardState: gameState} )

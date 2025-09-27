@@ -1,0 +1,166 @@
+{
+  "id": "ea8ac45e-c9f7-4728-ab28-3466f5883589",
+  "prevId": "c4d88400-2f49-47ce-8280-e8f9c53a34ee",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.game_moves": {
+      "name": "game_moves",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "game_id": {
+          "name": "game_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_move": {
+          "name": "player_move",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "game_move_num": {
+          "name": "game_move_num",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "board_array_position": {
+          "name": "board_array_position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_board": {
+          "name": "updated_board",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "previous_board": {
+          "name": "previous_board",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_winning_move": {
+          "name": "is_winning_move",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "game_moves_game_id_games_id_fk": {
+          "name": "game_moves_game_id_games_id_fk",
+          "tableFrom": "game_moves",
+          "tableTo": "games",
+          "columnsFrom": [
+            "game_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.games": {
+      "name": "games",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "board": {
+          "name": "board",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "game_status": {
+          "name": "game_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_player": {
+          "name": "current_player",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "winner": {
+          "name": "winner",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

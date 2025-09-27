@@ -20,8 +20,8 @@ export const gameMovesTable = pgTable('game_moves', {
     playerMove: text('player_move').notNull(),
     gameMoveNum: integer('game_move_num').notNull(), 
     boardArrayPosition: integer('board_array_position').notNull(),
-    updatedBoard: text('board').array(),
-    previousBoard: text('board').array(),
+    updatedBoard: text('updated_board').array(),
+    previousBoard: text('previous_board').array(),
     isWinningMove: boolean('is_winning_move').default(false),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import GameBoard from './Gameboard'
+import ToggleButton from './ToggleButton';
+
 
 export default function Home() {
 
@@ -52,6 +54,13 @@ export default function Home() {
         fetchGames()
     }
 
+
+    const handleToggle = (selectedOption: string) => {
+        console.log('Selected option:', selectedOption);
+        // if selected option is in progress, then show in progress or new games
+        // if selected option is complete, then only show games with finished states
+      };
+
     // if no activeGame ID, render the lobby
     if (!activeGameId) {
 
@@ -65,6 +74,11 @@ export default function Home() {
                     Create Game
                 </button>
                 <h1 className="text-yellow-300">This is the Games List:</h1>
+                <ToggleButton
+                    option1Label="In Progress"
+                    option2Label="Completed"
+                    onToggleChange={handleToggle}
+                />
                 <ul className="flex flex-col gap-4">
                 {games.map((id) => (
                     <li key={id}>

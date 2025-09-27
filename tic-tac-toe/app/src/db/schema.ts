@@ -12,5 +12,21 @@ export const gamesTable = pgTable('games', {
       .$onUpdate(() => new Date()),
   });
 
+export const gameMovesTable = pgTable('game_moves', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    gameId: uuid('game_id'),
+    playerMove: text('player_move').notNull(),
+    boardArrayPosition: integer('board_array_position').notNull(),
+    updatedBoard: text('board').array(),
+    previousBoard: text('board').array(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at')
+      .notNull()
+      .$onUpdate(() => new Date()),
+});
+
 export type InsertGame = typeof gamesTable.$inferInsert;
 export type SelectGame = typeof gamesTable.$inferSelect;
+
+export type InsertGameMove = typeof gameMovesTable.$inferInsert;
+export type SelectGameMove = typeof gameMovesTable.$inferSelect;

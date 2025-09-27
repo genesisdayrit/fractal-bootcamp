@@ -12,8 +12,6 @@ testConnection()
 const app = express();
 app.use(express.json())
 
-let games = new Map<string, GameState>()
-
 // create a game id and initial gamestate
 app.post("/api/create", (req: Request, res: Response) => {
     // create a random uuid

@@ -61,11 +61,10 @@ export default function Home() {
     const handleToggle = (selectedOption: string) => {
         console.log('Selected  option:', selectedOption);
         setShowCompleted(selectedOption === 'Completed')
-        // if selected option is in progress, then show in progress or new games
-        // if selected option is complete, then only show games with finished states
       };
      
     const filteredGames = games.filter(game => {
+        // if toggle is set to complete, only show isCompleted, else !idCompleted
         const isCompleted = ['X', 'O', 'tie'].includes(game.game_status)
         return showCompleted? isCompleted : !isCompleted
      })

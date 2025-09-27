@@ -18,6 +18,7 @@ export const gameMovesTable = pgTable('game_moves', {
       .notNull()
       .references(() => gamesTable.id, { onDelete: 'cascade' }),
     playerMove: text('player_move').notNull(),
+    gameMoveNum: integer('game_move_num').notNull(), 
     boardArrayPosition: integer('board_array_position').notNull(),
     updatedBoard: text('board').array(),
     previousBoard: text('board').array(),

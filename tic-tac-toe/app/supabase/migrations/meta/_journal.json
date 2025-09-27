@@ -43,6 +43,13 @@
       "when": 1758976610774,
       "tag": "0005_faithful_dagger",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1758976724433,
+      "tag": "0006_abandoned_talkback",
+      "breakpoints": true
     }
   ]
 }

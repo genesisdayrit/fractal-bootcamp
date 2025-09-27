@@ -5,7 +5,7 @@ type GameState = {
     currentPlayer: Player
     board: Cell[]
     gameStatus: 'new game'| 'X' | 'O' | 'tie' | 'in progress'
-    winner: Player | undefined | null
+    winner: Player | null
 }
 
 type Game = {
@@ -18,7 +18,7 @@ export function initialGameState(): GameState {
     currentPlayer: 'X',
     board: Array(9).fill(''),
     gameStatus: 'new game',
-    winner: undefined
+    winner: null
     }
 }
 
@@ -38,7 +38,7 @@ const winningCombinations = [
     [2, 4, 6]
 ]
 
-function checkWinner(board: Cell[]): { winner?: Player; isDraw: boolean } {
+function checkWinner(board: Cell[]): { winner: Player | null; isDraw: boolean } {
     // check for winning combinations
     for (let i = 0; i < winningCombinations.length; i++) {
         const combination = winningCombinations[i]
@@ -50,7 +50,7 @@ function checkWinner(board: Cell[]): { winner?: Player; isDraw: boolean } {
     
     // check for draw (board is full with no winner)
     const isDraw = !board.includes('')
-    return { winner: undefined, isDraw }
+    return { winner: null, isDraw }
 }
 
 export function makeMove(gameState: GameState, cellIndex: number):GameState {

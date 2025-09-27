@@ -3,35 +3,10 @@ import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
 import { db } from './db/index'
-import { fetchGameIds, testConnection } from './db/queries';
+import { testConnection, fetchGameIds, fetchGame, updateGameState } from './db/queries';
 import { gamesTable } from './db/schema'
 
-// async function testConnection() {
-//     try {
-//         const games = await db.select().from(gamesTable);
-//         console.log('Successfully connected to supabase and fetched data:', games)
-
-        // await db.insert(gamesTable).values(
-        //     { 
-        //         id: randomUUID(),
-        //         board: [Array(9).fill('')],
-        //         gameStatus: 'new game',
-        //         currentPlayer: 'X',
-        //         winner: null,
-        //         // createdAt: new Date(),
-        //         updatedAt: new Date()  
-        //     });
-        // console.log('Successfully inserted data.');
-
-//     } catch (error) {
-//         console.error('Error connecting to Supabase with Drizzle:', error)
-//     } finally {
-
-//     }
-// }
-
-// testConnection();
-
+// Check for successful supabase connection
 testConnection()
 
 const app = express();
@@ -54,27 +29,25 @@ app.post("/api/create", (req: Request, res: Response) => {
     res.json( {ok: true, id: gameId, boardState: gameState} )
 })
 
-// return the gameState for specific gameId
-app.get("/api/game/:id", (req: Request, res: Response) => {
+// new fetch game id
+app.get("/api/game/:id", async (req: Request, res: Response) => {
     // receive the game id from the component
         const gameId = req.params.id
-        const gameState = games.get(gameId)
-
-        if (gameState) {
+        try {
+            const gameState = await fetchGame(gameId)
             res.json(gameState)
-        } else {
-            res.status(404).send('Game not found')
+            console.log("Fetched Game State:", gameState)
+
+        } catch (error) {
+            console.error("Error:", error)
+            res.status(500).json({'Failed to retrieve data': error})
         }
 })
-
-// test message
-app.get("/api/message", (req: Request, res: Response) => res.send("Hello from express!"));
-
 
 // get gameIds
 app.get("/api/games", async (req: Request, res: Response) => {
     try {
-        const result = await fetchGameIds(games)
+        const result = await fetchGameIds()
         res.json(result)
         console.log("Fetch Game ID's:", result);
     } catch (error) {
@@ -83,18 +56,34 @@ app.get("/api/games", async (req: Request, res: Response) => {
     }
 })
 
-// update gameState for specific game id
-app.post("/api/game/:id/move", (req: Request, res: Response) => {
-    const moveRequest = req.body
-    const cellIndex = moveRequest.cellPosition
-    const gameId = moveRequest.id
+// update gameState for specific game id with database persistence
+app.post("/api/game/:id/move", async (req: Request, res: Response) => {
+    try {
+        const moveRequest = req.body
+        const cellIndex = moveRequest.cellPosition
+        const gameId = req.params.id
 
-    const prev = games.get(gameId); if (!prev) return 404;
-    const updatedGameState = makeMove(prev, cellIndex); 
-    games.set(gameId, updatedGameState);
+        console.log('Move request received:', { gameId, cellIndex })
 
-    console.log('Data received:', moveRequest, updatedGameState)
-    res.json( {ok: true, updatedGameState} )
+        // Fetch current game state from database
+        const currentGameState = await fetchGame(gameId)
+        if (!currentGameState) {
+            return res.status(404).json({ error: 'Game not found' })
+        }
+
+        // Apply the move
+        const updatedGameState = makeMove(currentGameState, cellIndex)
+        
+        // Save updated state to database
+        const savedGame = await updateGameState(gameId, updatedGameState)
+        
+        console.log('Move processed successfully:', savedGame)
+        res.json({ ok: true, gameState: updatedGameState })
+        
+    } catch (error) {
+        console.error("Error processing move:", error)
+        res.status(500).json({ error: 'Failed to process move', details: error })
+    }
 })
 
 app.post("/api/game/:id/reset", (req: Request, res: Response) => {

@@ -14,6 +14,7 @@ const [gameMoves, setGameMoves] = useState<GameMove[]>([])
 const [aiResponse, setAiResponse] = useState('')
 const [aiRecommendedMove, setAiRecommendedMove] = useState('')
 const [loading, setLoading] = useState(true)
+const [aiLoading, setAiLoading] = useState(false)
 const [error, setError] = useState<string | null>(null)
 
 useEffect(() => {
@@ -83,18 +84,25 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
   }
 
 const handleAiRequest = async (boardState: Cell[], currentPlayer: string) => {
-  let response = await fetch('/api/recommend-move', {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({boardState: boardState, currentPlayer: currentPlayer})
-  })
-  
-  let result = await response.json()
+  setAiLoading(true)
+  try {
+    let response = await fetch('/api/recommend-move', {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({boardState: boardState, currentPlayer: currentPlayer})
+    })
+    
+    let result = await response.json()
 
-  if (result.ok) {
-    console.log('OpenAI Response:', result)
-    setAiResponse(result.recommendedAction)
-    setAiRecommendedMove(result.parsedResponse)
+    if (result.ok) {
+      console.log('OpenAI Response:', result)
+      setAiResponse(result.recommendedAction)
+      setAiRecommendedMove(result.parsedResponse)
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    setAiLoading(false)
   }
 }
 
@@ -114,6 +122,8 @@ const resetGame = async (gameId: String) => {
     fetchGameState()
     fetchGameMoves()
     setAiResponse('')
+    setAiRecommendedMove('')
+    setAiLoading(false)
     console.log(gameState)
   }
 }
@@ -173,10 +183,18 @@ return (
     </button>
     </div>
     <button 
-      className="mt-4 px-4 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded hover:bg-blue-600"
+      className={`mt-4 px-4 py-2 text-white rounded ${aiLoading ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-700 hover:bg-orange-800'}`}
       onClick={() => handleAiRequest(gameState.board, gameState.currentPlayer)}
+      disabled={aiLoading}
     >
-      Recommend Move
+      {aiLoading ? (
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          Getting AI Recommendation...
+        </div>
+      ) : (
+        'Recommend Move'
+      )}
     </button>
     <div className="mt-4">
       <h3 className="text-lg font-bold text-yellow-300">Game Moves:</h3>

@@ -10,9 +10,11 @@ export default function Gameboard(props: GameboardProps) {
 
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
+const [gameMoves, setGameMoves] = useState([])
 
 useEffect(() => {
   fetchGameState()
+  fetchGameMoves()
   }, []
 )
 
@@ -24,6 +26,13 @@ const fetchGameState = async () => {
   let gameState = await response.json()
   setGameState(gameState)
   console.log(gameState)
+}
+
+const fetchGameMoves = async () => {
+  let response = await fetch(`/api/game/${id}/game-moves`)
+  let gameMoves = await response.json()
+  setGameMoves(gameMoves)
+  console.log(gameMoves)
 }
 
 const sendMove = async (gameId: String, cellIndex: Number) => {
@@ -40,6 +49,7 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
   if (result.ok) {
     console.log("Data sent sucessfully!", gameState)
     fetchGameState()
+    fetchGameMoves()
     }
   }
 
@@ -55,6 +65,7 @@ const resetGame = async (gameId: String) => {
   let result = await response.json()
   if (result.ok) {
     fetchGameState()
+    fetchGameMoves()
     console.log(gameState)
   }
 }
@@ -94,7 +105,16 @@ return (
       Reset Game
     </button>
     </div>
-    
+    <div className="mt-4">
+      <h3 className="text-lg font-bold text-yellow-300">Game Moves:</h3>
+      <div className="max-h-40 overflow-y-auto">
+        {gameMoves.map((move, index) => (
+          <div key={move.id} className="text-sm text-yellow-200">
+            Move {move.gameMoveNum}: Player {move.playerMove} → Position {move.boardArrayPosition}
+          </div>
+        ))}
+      </div>
+    </div>
     </div>
   </>
 )

@@ -2,9 +2,7 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
-import { db } from './db/index'
-import { testConnection, fetchGames, fetchGame, updateGameState, createGame } from './db/queries';
-import { gamesTable } from './db/schema'
+import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves, createGameMove, getMoveNumber, deleteGameMoves } from './db/queries';
 
 // Check for successful supabase connection
 testConnection()
@@ -42,6 +40,21 @@ app.get("/api/game/:id", async (req: Request, res: Response) => {
         }
 })
 
+// get game moves for game id
+app.get("/api/game/:id/game-moves", async (req: Request, res: Response) => {
+    // receive the game id from the component
+        const gameId = req.params.id
+        try {
+            const gameMoves = await fetchGameMoves(gameId)
+            res.json(gameMoves)
+            console.log("Fetched Game Moves:", gameMoves)
+
+        } catch (error) {
+            console.error("Error:", error)
+            res.status(500).json({'Failed to retrieve data': error})
+        }
+})
+
 // get gameIds
 app.get("/api/games", async (req: Request, res: Response) => {
     try {
@@ -58,7 +71,7 @@ app.get("/api/games", async (req: Request, res: Response) => {
 app.post("/api/game/:id/move", async (req: Request, res: Response) => {
     try {
         const moveRequest = req.body
-        const cellIndex = moveRequest.cellPosition
+        const cellIndex = moveRequest.cellPosition as number
         const gameId = req.params.id
 
         console.log('Move request received:', { gameId, cellIndex })
@@ -75,6 +88,18 @@ app.post("/api/game/:id/move", async (req: Request, res: Response) => {
         // Save updated state to database
         const savedGame = await updateGameState(gameId, updatedGameState)
         
+        const moveData = {
+            gameId: gameId,
+            playerMove: currentGameState.currentPlayer,
+            gameMoveNum: await getMoveNumber(gameId),
+            boardArrayPosition: cellIndex,
+            updatedBoard: updatedGameState.board,
+            previousBoard: currentGameState.board,
+            isWinningMove: (updatedGameState.gameStatus === 'X' || updatedGameState.gameStatus === 'O')
+        }
+        
+        await createGameMove(moveData)
+        
         console.log('Move processed successfully:', savedGame)
         res.json({ ok: true, gameState: updatedGameState })
         
@@ -84,12 +109,24 @@ app.post("/api/game/:id/move", async (req: Request, res: Response) => {
     }
 })
 
-app.post("/api/game/:id/reset", (req: Request, res: Response) => {
+app.post("/api/game/:id/reset", async (req: Request, res: Response) => {
     const gameId = req.params.id
-    const gameState = initialGameState()
-    updateGameState(gameId, gameState)
-    console.log('Reset request received', gameState)
-    res.json( {ok: true, gameState} )
+
+    try {
+        // delete game moves
+        await deleteGameMoves(gameId)
+
+        // set to initial game state
+        const gameState = initialGameState()
+        await updateGameState(gameId, gameState)
+
+        console.log('Reset request received', gameState)
+        res.json( {ok: true, gameState} )
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset game', details: error })
+    }
+    
 })
     
 

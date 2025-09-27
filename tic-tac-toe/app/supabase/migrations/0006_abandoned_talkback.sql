@@ -1,0 +1,1 @@
+ALTER TABLE "game_moves" ADD COLUMN "game_move_num" integer NOT NULL;

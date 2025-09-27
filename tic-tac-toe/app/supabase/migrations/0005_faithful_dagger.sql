@@ -1,0 +1,1 @@
+ALTER TABLE "game_moves" ADD COLUMN "is_winning_move" boolean DEFAULT false;

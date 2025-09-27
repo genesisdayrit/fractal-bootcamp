@@ -13,6 +13,13 @@ type Game = {
     gameState: GameState
 }
 
+type GameMove = {
+    id: string
+    gameMoveNum: number
+    playerMove: string
+    boardArrayPosition: number
+  }
+
 export function initialGameState(): GameState {
     return {
     currentPlayer: 'X',
@@ -92,4 +99,4 @@ export function getGameStatusMessage(gameState: GameState): String {
 }
 
 
-export type { Player, Cell, GameState }
+export type { Player, Cell, GameState, GameMove }

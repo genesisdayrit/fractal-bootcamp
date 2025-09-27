@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { initialGameState, getGameStatusMessage, type GameState } from '../tictactoe'
+import { initialGameState, getGameStatusMessage, type GameState, type Cell, type GameMove } from '../tictactoe'
 
 type GameboardProps = {
   id: string
@@ -10,31 +10,58 @@ export default function Gameboard(props: GameboardProps) {
 
 const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
-const [gameMoves, setGameMoves] = useState([])
+const [gameMoves, setGameMoves] = useState<GameMove[]>([])
 const [aiResponse, setAiResponse] = useState('')
 const [aiRecommendedMove, setAiRecommendedMove] = useState('')
+const [loading, setLoading] = useState(true)
+const [error, setError] = useState<string | null>(null)
 
 useEffect(() => {
-  fetchGameState()
-  fetchGameMoves()
+  const loadGameData = async () => {
+    setLoading(true)
+    await fetchGameState()
+    await fetchGameMoves()
+    setLoading(false)
+  }
+  
+  loadGameData()
   }, []
 )
 
 const fetchGameState = async () => {
+  try {
+    console.log(`Game ID: ${id} received successfully`)
 
-  console.log(`Game ID: ${id} received successfully`)
-
-  let response = await fetch(`/api/game/${id}`)
-  let gameState = await response.json()
-  setGameState(gameState)
-  console.log(gameState)
+    let response = await fetch(`/api/game/${id}`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch game state: ${response.status}`)
+    }
+    
+    let gameState = await response.json()
+    setGameState(gameState)
+    console.log(gameState)
+    setError(null)
+  } catch (error) {
+    console.error('Error fetching game state:', error)
+    setError('Failed to load game. Returning to lobby.')
+    setTimeout(() => backToLobbyClicked(), 2000)
+  }
 }
 
 const fetchGameMoves = async () => {
-  let response = await fetch(`/api/game/${id}/game-moves`)
-  let gameMoves = await response.json()
-  setGameMoves(gameMoves)
-  console.log(gameMoves)
+  try {
+    let response = await fetch(`/api/game/${id}/game-moves`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch game moves: ${response.status}`)
+    }
+    
+    let gameMoves = await response.json()
+    setGameMoves(gameMoves)
+    console.log(gameMoves)
+  } catch (error) {
+    console.error('Error fetching game moves:', error)
+    // Don't redirect for game moves errors, just log them
+  }
 }
 
 const sendMove = async (gameId: String, cellIndex: Number) => {
@@ -55,7 +82,7 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
     }
   }
 
-const handleAiRequest = async (boardState: [], currentPlayer: string) => {
+const handleAiRequest = async (boardState: Cell[], currentPlayer: string) => {
   let response = await fetch('/api/recommend-move', {
     method: "POST",
     headers: {"Content-Type": "application/json"},
@@ -89,6 +116,25 @@ const resetGame = async (gameId: String) => {
     setAiResponse('')
     console.log(gameState)
   }
+}
+
+// Show loading state
+if (loading) {
+  return (
+    <div className="flex flex-col gap-4 items-center justify-center min-h-screen">
+      <h1 className="text-xl text-yellow-300">Loading game...</h1>
+    </div>
+  )
+}
+
+// Show error state
+if (error) {
+  return (
+    <div className="flex flex-col gap-4 items-center justify-center min-h-screen">
+      <h1 className="text-xl text-red-400">Error: {error}</h1>
+      <p className="text-yellow-200">Redirecting to lobby...</p>
+    </div>
+  )
 }
 
 return (
@@ -135,7 +181,7 @@ return (
     <div className="mt-4">
       <h3 className="text-lg font-bold text-yellow-300">Game Moves:</h3>
       <div className="max-h-40 overflow-y-auto">
-        {gameMoves.map((move, index) => (
+        {gameMoves.map((move) => (
           <div key={move.id} className="text-sm text-yellow-200">
             Move {move.gameMoveNum}: Player {move.playerMove} to Position {move.boardArrayPosition}
           </div>

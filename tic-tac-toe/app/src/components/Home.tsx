@@ -32,18 +32,29 @@ export default function Home() {
     
     // when the create game button is clicked, post request to create game on server
     const createGameClicked = async () => {
-        console.log('Create Button clicked')
-        
-        let response = await fetch('api/create', {
-            method: "POST", 
-            headers: {"Content-Type": "application/json"}
-          })
-      
-          let result = await response.json()
-          if (result.ok) {
-            console.log(result)
-            setActiveGameId(result.id)
-          }
+        try {
+            console.log('Create Button clicked')
+            
+            let response = await fetch('/api/create', {
+                method: "POST", 
+                headers: {"Content-Type": "application/json"}
+              })
+          
+              if (!response.ok) {
+                throw new Error(`Failed to create game: ${response.status}`)
+              }
+          
+              let result = await response.json()
+              if (result.ok) {
+                console.log(result)
+                setActiveGameId(result.id)
+              } else {
+                console.error('Create game failed:', result)
+              }
+        } catch (error) {
+            console.error('Error creating game:', error)
+            // Could show user feedback here if needed
+        }
     }
 
     // when a user clicks join game, set the activeGameId

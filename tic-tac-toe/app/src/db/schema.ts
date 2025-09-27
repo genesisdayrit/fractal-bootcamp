@@ -1,4 +1,4 @@
-import { integer, pgTable, serial, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { integer, pgTable, boolean, serial, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const gamesTable = pgTable('games', {
     id: uuid('id').primaryKey().defaultRandom(),
@@ -21,6 +21,7 @@ export const gameMovesTable = pgTable('game_moves', {
     boardArrayPosition: integer('board_array_position').notNull(),
     updatedBoard: text('board').array(),
     previousBoard: text('board').array(),
+    isWinningMove: boolean('is_winning_move').default(false),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
       .notNull()

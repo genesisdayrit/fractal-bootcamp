@@ -6,32 +6,6 @@ import { db } from './db/index'
 import { testConnection, fetchGameIds, fetchGame, updateGameState } from './db/queries';
 import { gamesTable } from './db/schema'
 
-
-async function insertTestRecord() {
-    try {
-        
-        // insert test record
-        await db.insert(gamesTable).values(
-            { 
-                id: randomUUID(),
-                board: Array(9).fill(''),
-                gameStatus: 'new game',
-                currentPlayer: 'X',
-                winner: null,
-                // createdAt: new Date(),
-                updatedAt: new Date()  
-            });
-        console.log('Successfully inserted data.');
-
-    } catch (error) {
-        console.error('Error connecting to Supabase with Drizzle:', error)
-    } finally {
-
-    }
-}
-
-// insertTestRecord()
-
 // Check for successful supabase connection
 testConnection()
 
@@ -55,20 +29,6 @@ app.post("/api/create", (req: Request, res: Response) => {
     res.json( {ok: true, id: gameId, boardState: gameState} )
 })
 
-// Old return gameState
-// return the gameState for specific gameId
-// app.get("/api/game/:id", (req: Request, res: Response) => {
-//     // receive the game id from the component
-//         const gameId = req.params.id
-//         const gameState = games.get(gameId)
-
-//         if (gameState) {
-//             res.json(gameState)
-//         } else {
-//             res.status(404).send('Game not found')
-//         }
-// })
-
 // new fetch game id
 app.get("/api/game/:id", async (req: Request, res: Response) => {
     // receive the game id from the component
@@ -84,11 +44,6 @@ app.get("/api/game/:id", async (req: Request, res: Response) => {
         }
 })
 
-
-// test message
-app.get("/api/message", (req: Request, res: Response) => res.send("Hello from express!"));
-
-
 // get gameIds
 app.get("/api/games", async (req: Request, res: Response) => {
     try {
@@ -100,59 +55,6 @@ app.get("/api/games", async (req: Request, res: Response) => {
         res.status(500).json({'Failed to retrieve data': error})
     }
 })
-
-// Old update gameState for specific game id
-// app.post("/api/game/:id/move", (req: Request, res: Response) => {
-//     const moveRequest = req.body
-//     const cellIndex = moveRequest.cellPosition
-//     const gameId = moveRequest.id
-
-//     const prev = games.get(gameId); if (!prev) return 404;
-//     const updatedGameState = makeMove(prev, cellIndex); 
-//     // games.set(gameId, updatedGameState);
-
-//     await db.update(games).set({ board=updateGameState.board, 
-
-//     console.log('Data received:', moveRequest, updatedGameState)
-//     res.json( {ok: true, updatedGameState} )
-// })
-
-// app.post("/api/game/:id/move", async (req: Request, res: Response) => {
-    
-//     try {
-//         const moveRequest = req.body
-//         const cellIndex = moveRequest.cellPosition
-//         const gameId = moveRequest.id
-//         const gameState = moveRequest.gameState
-
-//         console.log('Received move request:', { gameId, cellIndex, gameState })
-
-//         if(!gameState) {
-//             return res.status(400).json({error: 'Game State was not received'})
-//         }
-
-//         const updatedGameState = makeMove(gameState, cellIndex)
-
-
-//         // const prev = games.get(gameId); if (!prev) return 404;
-//         // const move = makeMove(prev, cellIndex); 
-//         // games.set(gameId, updatedGameState);
-
-//         await updateGameState(gameId, updatedGameState)
-
-//         console.log('Database updated:', updatedGameState)
-//         res.json( {ok: true, updatedGameState} )
-
-//         // if(updatedGameState) {
-//         //     console.log('Data received:', updatedGameState)
-//         //     res.json( {ok: true, updatedGameState} )
-//         // } else console.log('error')
-        
-//     } catch (error) {
-//         console.error("Error:", error)
-//         res.status(500).json({'Failed to retrieve data': error})
-//     }
-// })
 
 // update gameState for specific game id with database persistence
 app.post("/api/game/:id/move", async (req: Request, res: Response) => {

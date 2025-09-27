@@ -88,10 +88,8 @@ app.post("/api/game/:id/move", async (req: Request, res: Response) => {
 
 app.post("/api/game/:id/reset", (req: Request, res: Response) => {
     const gameId = req.params.id
-    const prev = games.get(gameId)
     const gameState = initialGameState()
-    games.set(gameId, gameState)
-    console.log(prev)
+    updateGameState(gameId, gameState)
     console.log('Reset request received', gameState)
     res.json( {ok: true, gameState} )
 })

@@ -53,7 +53,6 @@ export default function Home() {
               }
         } catch (error) {
             console.error('Error creating game:', error)
-            // Could show user feedback here if needed
         }
     }
 

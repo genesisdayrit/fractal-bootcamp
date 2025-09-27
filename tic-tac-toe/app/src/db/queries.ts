@@ -41,14 +41,13 @@ export const createGame = async (id: string, initialGameState: GameState) => {
 }
 
 // fetch all game ids
-export const fetchGameIds = async () => {
+export const fetchGames = async () => {
     try {
 
-        const rawStatement = sql`SELECT id FROM games ORDER BY updated_at DESC`
-        const rows = await db.execute(rawStatement)
-        const gameIds = rows.map(row => row.id)
-
-        return gameIds
+        const rawStatement = sql`SELECT * FROM games ORDER BY updated_at DESC`
+        const result = await db.execute(rawStatement)
+        
+        return result
     } catch (error) {
         console.error('Error fetching Game IDs:', error)
         throw error
@@ -95,28 +94,3 @@ export const updateGameState = async (id: string, gameState: GameState) => {
         throw error
     }
 }
-
-// reset based on GameId
-
-// export const createGame = async (id: string, initialGameState: GameState) => {
-//     try {
-//         const {currentPlayer, board, gameStatus, winner } = initialGameState
-//         const gameId = id
-//         const result = await db.insert(gamesTable).values({
-//              id: gameId,
-//              board: board,
-//              gameStatus: gameStatus,
-//              currentPlayer: currentPlayer,
-//              winner: winner,
-//              createdAt: new Date(),
-//              updatedAt: new Date(),
-//             }).returning()
-            
-//             const newGameRecord = result[0]
-//             console.log('Game created successfully:', newGameRecord)
-//             return newGameRecord
-//     } catch (error) {
-//     console.error('error creating game:', error)
-//     throw error
-//     }
-// }

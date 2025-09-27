@@ -1,0 +1,27 @@
+.toggle-button-container {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .toggle-option {
+    padding: 10px 15px;
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .toggle-option.selected {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .toggle-option:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .toggle-option.selected:hover {
+    background-color: #0056b3;
+  }

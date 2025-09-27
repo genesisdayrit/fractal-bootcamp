@@ -105,12 +105,15 @@ return (
       Reset Game
     </button>
     </div>
+    <button className="mt-4 px-4 py-2 bg-orange-700 text-white rounded hover:bg-blue-600">
+      Recommend Move
+    </button>
     <div className="mt-4">
       <h3 className="text-lg font-bold text-yellow-300">Game Moves:</h3>
       <div className="max-h-40 overflow-y-auto">
         {gameMoves.map((move, index) => (
           <div key={move.id} className="text-sm text-yellow-200">
-            Move {move.gameMoveNum}: Player {move.playerMove} → Position {move.boardArrayPosition}
+            Move {move.gameMoveNum}: Player {move.playerMove} to Position {move.boardArrayPosition}
           </div>
         ))}
       </div>

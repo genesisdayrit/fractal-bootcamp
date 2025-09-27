@@ -159,7 +159,21 @@ app.post('/api/recommend-move', async (req, res) => {
         console.log(completion)
 
         const openaiResponse = completion.choices[0].message.content;
-        res.status(200).json({ok: true, recommendedAction: openaiResponse})
+
+        const parseRecommendedMovePrompt = `You are helping recommend a tic-tac-toe move. 
+        Based on the response from ${openaiResponse}, please return just the concise recommended 
+        answer to pass back to the user. 
+        `
+
+        const parsedResponseCompletion = await openai.chat.completions.create({
+            model: "gpt-4o",
+            messages: [
+                { role: "system", content: parseRecommendedMovePrompt },
+            ]
+        })
+
+        const parsedResponse = parsedResponseCompletion.choices[0].message.content
+        res.status(200).json({ok: true, recommendedAction: openaiResponse, parsedResponse: parsedResponse})
 
     } catch (error) {
         res.status(500).json({ error: 'Failed to get OpenAI response'})

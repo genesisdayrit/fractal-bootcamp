@@ -12,6 +12,7 @@ const {id, backToLobbyClicked} = props
 const [gameState, setGameState] = useState<GameState>(initialGameState())
 const [gameMoves, setGameMoves] = useState([])
 const [aiResponse, setAiResponse] = useState('')
+const [aiRecommendedMove, setAiRecommendedMove] = useState('')
 
 useEffect(() => {
   fetchGameState()
@@ -65,8 +66,8 @@ const handleAiRequest = async (boardState: [], currentPlayer: string) => {
 
   if (result.ok) {
     console.log('OpenAI Response:', result)
-    let aiResponse = result.recommendedAction
-    setAiResponse(aiResponse)
+    setAiResponse(result.recommendedAction)
+    setAiRecommendedMove(result.parsedResponse)
   }
 }
 
@@ -85,6 +86,7 @@ const resetGame = async (gameId: String) => {
   if (result.ok) {
     fetchGameState()
     fetchGameMoves()
+    setAiResponse('')
     console.log(gameState)
   }
 }
@@ -142,6 +144,7 @@ return (
     </div>
     <div className="flex flex-col justify-center items-center mt-4 gap-4 w-2/5 bg-gray-200 border rounded-lg">
       <h1>AI Response</h1>
+      <p>{aiRecommendedMove}</p>
       <p>{aiResponse}</p>
       <button onClick={()=>setAiResponse('')} className="px-4 py-2 bg-gray-400">
           Clear Response

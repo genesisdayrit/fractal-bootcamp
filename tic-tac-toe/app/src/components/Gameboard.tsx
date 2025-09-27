@@ -65,6 +65,7 @@ const resetGame = async (gameId: String) => {
   let result = await response.json()
   if (result.ok) {
     fetchGameState()
+    fetchGameMoves()
     console.log(gameState)
   }
 }

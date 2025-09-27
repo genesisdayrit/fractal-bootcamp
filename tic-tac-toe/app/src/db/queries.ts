@@ -135,3 +135,18 @@ export const getMoveNumber = async (gameId: string): Promise<number> => {
         return 1
     }
 }
+
+export const deleteGameMoves = async (gameId: string) => {
+    try {
+        const result = await db
+            .delete(gameMovesTable)
+            .where(eq(gameMovesTable.gameId, gameId))
+            .returning();
+        
+        console.log(`Deleted ${result.length} moves for game ${gameId}`);
+        return result;
+    } catch (error) {
+        console.error('Error deleting game moves:', error);
+        throw error;
+    }
+}

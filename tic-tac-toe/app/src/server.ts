@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
-import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves, createGameMove, getMoveNumber } from './db/queries';
+import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves, createGameMove, getMoveNumber, deleteGameMoves } from './db/queries';
 
 // Check for successful supabase connection
 testConnection()
@@ -109,12 +109,24 @@ app.post("/api/game/:id/move", async (req: Request, res: Response) => {
     }
 })
 
-app.post("/api/game/:id/reset", (req: Request, res: Response) => {
+app.post("/api/game/:id/reset", async (req: Request, res: Response) => {
     const gameId = req.params.id
-    const gameState = initialGameState()
-    updateGameState(gameId, gameState)
-    console.log('Reset request received', gameState)
-    res.json( {ok: true, gameState} )
+
+    try {
+        // delete game moves
+        await deleteGameMoves(gameId)
+
+        // set to initial game state
+        const gameState = initialGameState()
+        await updateGameState(gameId, gameState)
+
+        console.log('Reset request received', gameState)
+        res.json( {ok: true, gameState} )
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: 'Failed to reset game', details: error })
+    }
+    
 })
     
 

@@ -127,7 +127,7 @@ return (
     </button>
     </div>
     <button 
-      className="mt-4 px-4 py-2 bg-orange-700 text-white rounded hover:bg-blue-600"
+      className="mt-4 px-4 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded hover:bg-blue-600"
       onClick={() => handleAiRequest(gameState.board, gameState.currentPlayer)}
     >
       Recommend Move
@@ -146,7 +146,7 @@ return (
       <h1>AI Response</h1>
       <p>{aiRecommendedMove}</p>
       <p>{aiResponse}</p>
-      <button onClick={()=>setAiResponse('')} className="px-4 py-2 bg-gray-400">
+      <button onClick={()=>setAiResponse('')} className="px-4 py-2 bg-gray-400 hover:bg-gray-600">
           Clear Response
         </button>
     </div>

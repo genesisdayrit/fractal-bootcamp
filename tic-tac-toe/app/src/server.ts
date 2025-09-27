@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import ViteExpress from "vite-express";
 import { initialGameState, makeMove, type GameState } from "./tictactoe";
 import { randomUUID } from 'crypto';
-import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves } from './db/queries';
+import { testConnection, fetchGames, fetchGame, updateGameState, createGame, fetchGameMoves, createGameMove, getMoveNumber } from './db/queries';
 
 // Check for successful supabase connection
 testConnection()
@@ -71,7 +71,7 @@ app.get("/api/games", async (req: Request, res: Response) => {
 app.post("/api/game/:id/move", async (req: Request, res: Response) => {
     try {
         const moveRequest = req.body
-        const cellIndex = moveRequest.cellPosition
+        const cellIndex = moveRequest.cellPosition as number
         const gameId = req.params.id
 
         console.log('Move request received:', { gameId, cellIndex })
@@ -87,6 +87,18 @@ app.post("/api/game/:id/move", async (req: Request, res: Response) => {
         
         // Save updated state to database
         const savedGame = await updateGameState(gameId, updatedGameState)
+        
+        const moveData = {
+            gameId: gameId,
+            playerMove: currentGameState.currentPlayer,
+            gameMoveNum: await getMoveNumber(gameId),
+            boardArrayPosition: cellIndex,
+            updatedBoard: updatedGameState.board,
+            previousBoard: currentGameState.board,
+            isWinningMove: (updatedGameState.gameStatus === 'X' || updatedGameState.gameStatus === 'O')
+        }
+        
+        await createGameMove(moveData)
         
         console.log('Move processed successfully:', savedGame)
         res.json({ ok: true, gameState: updatedGameState })

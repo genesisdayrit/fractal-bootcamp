@@ -1,6 +1,6 @@
 import { db } from './index'
 import { sql, eq } from 'drizzle-orm';
-import { gamesTable, gameMovesTable } from './schema';
+import { gamesTable, gameMovesTable, type InsertGameMove } from './schema';
 import { type GameState } from '../tictactoe'
 
 // test supabase connection
@@ -95,7 +95,6 @@ export const updateGameState = async (id: string, gameState: GameState) => {
     }
 }
 
-
 export const fetchGameMoves = async (gameId: string) => {
     try {
         const result = await db
@@ -110,4 +109,29 @@ export const fetchGameMoves = async (gameId: string) => {
         console.error('error fetching game moves:', error);
         throw error;
     }
-};
+}
+
+export const createGameMove = async (gameMove: InsertGameMove) => {
+    try {
+        const result = await db.insert(gameMovesTable).values(gameMove).returning()
+        console.log('Game move created successfully:', result[0])
+        return result[0]
+    } catch (error) {
+        console.error('Error creating game move:', error)
+        throw error
+    }
+}
+
+export const getMoveNumber = async (gameId: string): Promise<number> => {
+    try {
+        const moves = await db
+            .select()
+            .from(gameMovesTable)
+            .where(eq(gameMovesTable.gameId, gameId))
+        
+        return moves.length + 1
+    } catch (error) {
+        console.error('Error getting next move number:', error)
+        return 1
+    }
+}

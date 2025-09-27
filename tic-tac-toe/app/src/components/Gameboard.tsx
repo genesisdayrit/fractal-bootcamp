@@ -49,6 +49,7 @@ const sendMove = async (gameId: String, cellIndex: Number) => {
   if (result.ok) {
     console.log("Data sent sucessfully!", gameState)
     fetchGameState()
+    fetchGameMoves()
     }
   }
 

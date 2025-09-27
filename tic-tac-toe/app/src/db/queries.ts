@@ -17,11 +17,6 @@ export const testConnection = async () => {
     }
 }
 
-    // currentPlayer: 'X',
-    // board: Array(9).fill(''),
-    // gameStatus: 'new game',
-    // winner: null
-
 export const createGame = async (id: string, initialGameState: GameState) => {
     try {
         const {currentPlayer, board, gameStatus, winner } = initialGameState
@@ -100,3 +95,28 @@ export const updateGameState = async (id: string, gameState: GameState) => {
         throw error
     }
 }
+
+// reset based on GameId
+
+// export const createGame = async (id: string, initialGameState: GameState) => {
+//     try {
+//         const {currentPlayer, board, gameStatus, winner } = initialGameState
+//         const gameId = id
+//         const result = await db.insert(gamesTable).values({
+//              id: gameId,
+//              board: board,
+//              gameStatus: gameStatus,
+//              currentPlayer: currentPlayer,
+//              winner: winner,
+//              createdAt: new Date(),
+//              updatedAt: new Date(),
+//             }).returning()
+            
+//             const newGameRecord = result[0]
+//             console.log('Game created successfully:', newGameRecord)
+//             return newGameRecord
+//     } catch (error) {
+//     console.error('error creating game:', error)
+//     throw error
+//     }
+// }

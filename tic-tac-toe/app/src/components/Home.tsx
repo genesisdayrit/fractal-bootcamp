@@ -3,12 +3,15 @@ import GameBoard from './Gameboard'
 import ToggleButton from './ToggleButton';
 
 
+type GameStatus = { id: string; game_status: string }
+
 export default function Home() {
 
     type ActiveGameId = string | null
 
-    const [games, setGames] = useState<string[]>([])
+    const [games, setGames] = useState<GameStatus[]>([])
     const [activeGameId, setActiveGameId] = useState<ActiveGameId>(null)
+    const [showCompleted, setShowCompleted] = useState(false)
 
     // initiate fetch games on page load
     useEffect(() => {
@@ -56,10 +59,16 @@ export default function Home() {
 
 
     const handleToggle = (selectedOption: string) => {
-        console.log('Selected option:', selectedOption);
+        console.log('Selected  option:', selectedOption);
+        setShowCompleted(selectedOption === 'Completed')
         // if selected option is in progress, then show in progress or new games
         // if selected option is complete, then only show games with finished states
       };
+     
+    const filteredGames = games.filter(game => {
+        const isCompleted = ['X', 'O', 'tie'].includes(game.game_status)
+        return showCompleted? isCompleted : !isCompleted
+     })
 
     // if no activeGame ID, render the lobby
     if (!activeGameId) {
@@ -80,9 +89,9 @@ export default function Home() {
                     onToggleChange={handleToggle}
                 />
                 <ul className="flex flex-col gap-4">
-                {games.map((id) => (
-                    <li key={id}>
-                        <button onClick={() => joinGameClicked(id)} className="p-2 px-4 border rounded-lg bg-gray-300 hover:bg-gray-400 ">Join Game: {id}</button>
+                {filteredGames.map((game) => (
+                    <li key={game.id}>
+                        <button onClick={() => joinGameClicked(game.id)} className="p-2 px-4 border rounded-lg bg-gray-300 hover:bg-gray-400 ">Join Game: {game.id}</button>
                     </li>
                 ))}
                 </ul>

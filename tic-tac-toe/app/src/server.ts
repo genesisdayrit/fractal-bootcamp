@@ -47,7 +47,7 @@ app.get("/api/games", async (req: Request, res: Response) => {
     try {
         const result = await fetchGameIds()
         res.json(result)
-        console.log("Fetch Game ID's:", result);
+        console.log("Fetch Games:", result);
     } catch (error) {
         console.error("Error:", error)
         res.status(500).json({'Failed to retrieve data': error})

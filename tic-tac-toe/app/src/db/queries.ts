@@ -44,11 +44,10 @@ export const createGame = async (id: string, initialGameState: GameState) => {
 export const fetchGameIds = async () => {
     try {
 
-        const rawStatement = sql`SELECT id FROM games ORDER BY updated_at DESC`
-        const rows = await db.execute(rawStatement)
-        const gameIds = rows.map(row => row.id)
-
-        return gameIds
+        const rawStatement = sql`SELECT id, game_status FROM games ORDER BY updated_at DESC`
+        const result = await db.execute(rawStatement)
+        
+        return result
     } catch (error) {
         console.error('Error fetching Game IDs:', error)
         throw error

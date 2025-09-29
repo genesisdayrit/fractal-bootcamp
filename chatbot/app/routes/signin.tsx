@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Form } from "react-router"
+import { redirect, Form } from "react-router"
 import { authClient } from "~/lib/auth-client"
 import { Input } from "../components/ui/input"
 import { Button } from "~/components/ui/button"
@@ -30,7 +30,7 @@ export default function SignIn() {
                     // show loading state
                 },
                 onSuccess: (ctx) => {
-                    // redirect to home
+                    throw redirect("/")
                 },
                 onError: (ctx) => {
                     alert(ctx.error)

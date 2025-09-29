@@ -28,11 +28,12 @@ export default function SignIn() {
 
     return (
         <div>
-            <h2>
+            <h2 className="">
                 Sign In
             </h2>
-            <Form onSubmit={signIn}>
+            <Form onSubmit={signIn} className="flex flex-col">
                 <input
+                    className="bg-black font-white"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}

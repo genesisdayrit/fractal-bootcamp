@@ -16,12 +16,17 @@ export default function SignUp() {
         password,
         name,
       },
+
+      
       {
         onRequest: (ctx) => {
           // show loading state
         },
         onSuccess: (ctx) => {
-          // throw redirect("/")
+          const authToken = ctx.response.headers.get("set-auth-token");
+            if (authToken) {
+              localStorage.setItem("bearer_token", authToken);
+            }
         },
         onError: (ctx) => {
           alert(ctx.error)

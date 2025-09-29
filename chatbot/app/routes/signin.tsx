@@ -4,16 +4,6 @@ import { authClient } from "~/lib/auth-client"
 import { Input } from "../components/ui/input"
 import { Button } from "~/components/ui/button"
 
-// import {
-//     Card,
-//     CardAction,
-//     CardContent,
-//     CardDescription,
-//     CardFooter,
-//     CardHeader,
-//     CardTitle,
-//   } from "../components/ui/card"
-
 
 export default function SignIn() {
     const [email, setEmail] = useState("")
@@ -30,7 +20,10 @@ export default function SignIn() {
                     // show loading state
                 },
                 onSuccess: (ctx) => {
-                    throw redirect("/")
+                    const authToken = ctx.response.headers.get("set-auth-token");
+                        if (authToken) {
+                    localStorage.setItem("bearer_token", authToken);
+                    }
                 },
                 onError: (ctx) => {
                     alert(ctx.error)
@@ -60,20 +53,6 @@ export default function SignIn() {
                 < Button>Sign In</Button>
             </Form>
 
-            {/* TODO: Possibly change to Card Component with inputs
-            <Card>
-                <CardHeader>
-                    <CardTitle>Card Title</CardTitle>
-                    <CardDescription>Card Description</CardDescription>
-                    <CardAction>Card Action</CardAction>
-                </CardHeader>
-                <CardContent>
-                    <p>Card Content</p>
-                </CardContent>
-                <CardFooter>
-                    <p>Card Footer</p>
-                </CardFooter>
-            </Card> */}
         </div>
 
         

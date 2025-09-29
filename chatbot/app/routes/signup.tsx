@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Form } from "react-router"
 import { authClient } from "../lib/auth-client"
+import { Input } from "../components/ui/input"
+import { Button } from "~/components/ui/button"
 
 export default function SignUp() {
   const [email, setEmail] = useState("")
@@ -29,36 +31,34 @@ export default function SignUp() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col justify-center items-center gap-4 h-screen mx-auto w-3xl">
       <h2>
-        Sign Up
+        Sign Up to Chatbot
       </h2>
       <Form
         onSubmit={signUp}
+        className="flex flex-col gap-4 border w-md p-8 "
       >
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
+        <label htmlFor="nameInput">Name:</label>
+        <Input 
+            type="name"
+            value={name}
+            // placeholder="Name"
+            onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+        <label htmlFor="nameInput">Email:</label>
+        <Input 
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+        <label htmlFor="nameInput">Password:</label>
+        <Input 
+            type="password"
+            value={password}
+            onChange={(e) => setEmail(e.target.value)}
         />
-        <button
-          type="submit"
-        >
-          Sign Up
-        </button>
+        < Button>Sign Up</Button>
       </Form>
     </div>
   )

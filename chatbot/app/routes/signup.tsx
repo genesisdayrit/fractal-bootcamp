@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Form } from "react-router"
 import { authClient } from "../lib/auth-client"
 import { Input } from "../components/ui/input"
-import { Button } from "~/components/ui/button"
+import { Button } from "../components/ui/button"
 
 export default function SignUp() {
   const [email, setEmail] = useState("")
@@ -44,7 +44,7 @@ export default function SignUp() {
             type="name"
             value={name}
             // placeholder="Name"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
         />
         <label htmlFor="nameInput">Email:</label>
         <Input 
@@ -56,9 +56,10 @@ export default function SignUp() {
         <Input 
             type="password"
             value={password}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
         />
-        < Button>Sign Up</Button>
+
+        <Button>Sign Up</Button>
       </Form>
     </div>
   )

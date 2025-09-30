@@ -14,6 +14,7 @@ export default function SignIn() {
             {
                 email,
                 password,
+                callbackURL: "/"
             },
             {
                 onRequest: (ctx) => {

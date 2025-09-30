@@ -3,11 +3,13 @@ import { redirect, Form } from "react-router"
 import { authClient } from "../lib/auth-client"
 import { Input } from "../components/ui/input"
 import { Button } from "../components/ui/button"
+import { useNavigate } from "react-router-dom"
 
 export default function SignUp() {
-  const [email, setEmail] = useState("")
   const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  let navigate = useNavigate()
 
   const signUp = async () => {
     await authClient.signUp.email(
@@ -27,6 +29,9 @@ export default function SignUp() {
             if (authToken) {
               localStorage.setItem("bearer_token", authToken);
             }
+
+            navigate("/", { replace: true });
+
         },
         onError: (ctx) => {
           alert(ctx.error)

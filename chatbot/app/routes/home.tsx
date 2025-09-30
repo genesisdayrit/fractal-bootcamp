@@ -1,25 +1,9 @@
-// import type { Route } from "./+types/home";
-// import { Welcome } from "../welcome/welcome";
-
-// export function meta({}: Route.MetaArgs) {
-//   return [
-//     { title: "New React Router App" },
-//     { name: "description", content: "Welcome to React Router!" },
-//   ];
-// }
-
-// export default function Home() {
-//   return <Welcome />;
-// }
-
 import { redirect } from 'react-router'
 import { Button } from "~/components/ui/button"
 import { Link } from "react-router-dom"
  
 import SignIn from '~/routes/signin'
 import SignUp from '~/routes/signup'
-// import type { Route } from "./+types/home"
-// import type { Route } from "./+types/protected"
  
 export function meta({}: Route.MetaArgs) {
   return [

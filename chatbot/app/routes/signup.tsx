@@ -30,7 +30,7 @@ export default function SignUp() {
               localStorage.setItem("bearer_token", authToken);
             }
 
-            navigate("/", { replace: true });
+            navigate("/app", { replace: true });
 
         },
         onError: (ctx) => {

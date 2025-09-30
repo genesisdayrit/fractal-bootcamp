@@ -29,6 +29,13 @@
       "when": 1759264897535,
       "tag": "0003_sparkling_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1759265012939,
+      "tag": "0004_young_vulcan",
+      "breakpoints": true
     }
   ]
 }

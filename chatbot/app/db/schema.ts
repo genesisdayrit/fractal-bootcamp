@@ -1,7 +1,7 @@
 import { integer, pgTable, varchar, uuid, timestamp, text, json} from "drizzle-orm/pg-core";
 import { user } from './auth-schema'
 
-export const thread = pgTable('thread', {
+export const chat = pgTable('chat', {
         id: uuid('id').primaryKey().defaultRandom(),
         userId: text('user_id')
             .notNull()
@@ -13,14 +13,14 @@ export const thread = pgTable('thread', {
             .$onUpdate(() => new Date()),
 });
 
-export const threadMessage = pgTable('thread_message', {
+export const chatMessage = pgTable('chat_message', {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: text('user_id')
         .notNull()
         .references(() => user.id),
-    threadId: uuid('thread_id')
+    chatId: uuid('chat_id')
         .notNull()
-        .references(() => thread.id),
+        .references(() => chat.id),
     message: text('title'),
     modelConfig: json('model_config'),
     createdAt: timestamp('created_at').notNull().defaultNow(),

@@ -8,4 +8,7 @@ export default [
     route("signin", "routes/signin.tsx"),
     route("app", "routes/app.tsx"),
     route("chat", "routes/chat.tsx"),
+    // route("api/ai-chat", "routes/api.chat.ts"),
+    route("api/chat", "routes/api.chat.ts"),
+    route("test-chat", "routes/test-chat.tsx"),
 ] satisfies RouteConfig;

@@ -36,6 +36,13 @@
       "when": 1759265012939,
       "tag": "0004_young_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1759336825508,
+      "tag": "0005_fresh_tarantula",
+      "breakpoints": true
     }
   ]
 }

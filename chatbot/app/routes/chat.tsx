@@ -40,6 +40,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
         const formData = await request.formData();
         const actionType = formData.get("actionType") as string;
 
+        // check if the message is an initial message, if so then generate
         if (actionType === "generateInitialResponse") {
             // handle initial ai response generation
             const message = formData.get("message") as string;
@@ -73,6 +74,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
             console.log("AI response inserted into database");
             return { success: true, type: "initialResponse" };
 
+        // check if the action type is a message submission, 
         } else if (actionType === "sendMessage") {
             // handle continuing conversation
             const message = formData.get("message") as string;
@@ -133,9 +135,10 @@ export default function Chat() {
     const submit = useSubmit();
     const revalidator = useRevalidator();
     const location = useLocation();
-    const [newMessage, setNewMessage] = useState('');
+    const [messageInput, setMessageInput] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasTriggeredInitial, setHasTriggeredInitial] = useState(false);
+    const [newUserMessage, setNewUserMessage] = useState<{id: string, message: string, role: 'user'} | null>(null);
 
     // handle initial message generation - detect if this is initial by checking if there's only a user message and no ai response
     useEffect(() => {
@@ -173,7 +176,10 @@ export default function Chat() {
     // revalidate after successful actions to get updated messages
     useEffect(() => {
         if (actionData?.success) {
+            setNewUserMessage(null);
             revalidator.revalidate();
+        } else if (actionData?.error) {
+            setNewUserMessage(null);
         }
     }, [actionData, revalidator]);
 
@@ -181,17 +187,27 @@ export default function Chat() {
     const handleSend = async (e: React.FormEvent) => {
         e.preventDefault();
         
-        if (!newMessage.trim() || isSubmitting) return;
+        if (!messageInput.trim() || isSubmitting) return;
 
         setIsSubmitting(true);
         
+        // add message to optimistic state immediately for instant UI feedback
+        const newMessageId = `${Date.now()}`;
+        setNewUserMessage({
+            id: newMessageId,
+            message: messageInput,
+            role: 'user'
+        });
+        
+        const messageToSend = messageInput;
+        setMessageInput(''); 
+        
         const formData = new FormData();
         formData.append("actionType", "sendMessage");
-        formData.append("message", newMessage);
+        formData.append("message", messageToSend);
         formData.append("userId", user?.id || "");
         
         submit(formData, { method: "post" });
-        setNewMessage(''); // clear input immediately
         setIsSubmitting(false);
     };
 
@@ -202,13 +218,15 @@ export default function Chat() {
         <div id="parent-div" className="flex flex-row bg-white justify-center max-w-full max-h-screen">
             <Sidebar />
             <div id="main-chat-section" className="flex-1 overflow-hidden flex flex-col">
+                
                 {/* chat header */}
-                <div className="p-4 bg-gray-100 border-b">
+                <div id="chat-header" className="p-4 bg-gray-100 border-b">
                     <h2 className="font-semibold">Chat {chatId?.slice(0, 8)}...</h2>
                 </div>
                 
                 {/* messages area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div id="messages-area" className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {/* render server messages */}
                     {messages.map((message) => (
                         <div 
                             key={message.id} 
@@ -229,9 +247,22 @@ export default function Chat() {
                         </div>
                     ))}
                     
-                    {/* ai processing indicator */}
-                    {(isAIProcessing || hasTriggeredInitial) && messages.length > 0 && 
-                     !messages.some(msg => msg.role === 'assistant') && (
+                    {/* if new message, render right away */}
+                    {newUserMessage && (
+                        <div className="flex justify-end">
+                            <div className="max-w-xs lg:max-w-md px-4 py-2 rounded-lg bg-blue-500 text-white">
+                                <div className="text-sm font-medium mb-1">You</div>
+                                <div className="whitespace-pre-wrap">
+                                    {newUserMessage.message}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* render ai loading */}
+                    {(((isAIProcessing || hasTriggeredInitial) && messages.length > 0 && 
+                     !messages.some(msg => msg.role === 'assistant')) || 
+                     (newUserMessage && isSubmitting)) && (
                         <div className="flex justify-start">
                             <div className="max-w-xs lg:max-w-md px-4 py-2 rounded-lg bg-gray-200 text-gray-800">
                                 <div className="text-sm font-medium mb-1">AI</div>
@@ -249,19 +280,19 @@ export default function Chat() {
                 </div>
 
                 {/* message input */}
-                <div className="p-4 bg-gray-100 border-t">
+                <div id="message-input" className="p-4 bg-gray-100 border-t">
                     <form onSubmit={handleSend} className="flex items-center space-x-2">
                         <input 
                             type="text" 
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
+                            value={messageInput}
+                            onChange={(e) => setMessageInput(e.target.value)}
                             placeholder="Type your message..." 
                             className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             disabled={isSubmitting}
                         />
                         <button 
                             type="submit"
-                            disabled={!newMessage.trim() || isSubmitting}
+                            disabled={!messageInput.trim() || isSubmitting}
                             className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
                         >
                             {isSubmitting ? 'Sending...' : 'Send'}

@@ -60,6 +60,7 @@ export const insertChatMessage = async (id: string, chatId: string, userId: stri
             chatId: chatId,
             userId: userId,
             message: message,
+            role: role,
             modelConfig: modelConfig,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -70,5 +71,33 @@ export const insertChatMessage = async (id: string, chatId: string, userId: stri
         return newChatMessageRecord
     } catch (error) {
         console.log(error)
+    }
+}
+
+// get all messages for a specific chat
+export const getChatMessages = async (chatId: string) => {
+    try {
+        const result = await db.select().from(chatMessagesTable)
+            .where(eq(chatMessagesTable.chatId, chatId))
+            .orderBy(chatMessagesTable.createdAt);
+        
+        return result;
+    } catch (error) {
+        console.error('Error fetching chat messages:', error);
+        throw error;
+    }
+}
+
+// get chat conversation history for ai context
+export const getChatHistory = async (chatId: string) => {
+    try {
+        const messages = await getChatMessages(chatId);
+        return messages.map(context => ({
+            role: context.role,
+            content: context.message || ''
+        }));
+    } catch (error) {
+        console.error('Error fetching chat history:', error);
+        throw error;
     }
 }

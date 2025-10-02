@@ -27,7 +27,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
 }
 
-// Action function to handle chat creation and OpenAI completion
+// action function to handle chat creation and immediate redirect
 export async function action({ request }: ActionFunctionArgs) {
     try {
         const formData = await request.formData();
@@ -37,7 +37,7 @@ export async function action({ request }: ActionFunctionArgs) {
         // generate chatId
         const chatId = randomUUID();
 
-        // for now, create chat title from first 20 characters of message (can generate title later)
+        // create chat title from first 20 characters of message
         const titleLimitChars = 20;
         const chatTitle = message.substring(0, titleLimitChars);
 
@@ -47,7 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
         const newChat = await createChat(chatId, userId, chatTitle);
         console.log("Chat created:", newChat);
 
-        // insert the user's message in chat_messages using insertMessage() from db/queries
+        // insert the user's message in chat_messages using insertChatMessage() from db/queries
         const userMessageId = randomUUID();
         await insertChatMessage(
             userMessageId,
@@ -59,28 +59,7 @@ export async function action({ request }: ActionFunctionArgs) {
         );
         console.log("User message inserted");
 
-        // generate openai ai response using vercel ai sdk
-        const { text: aiResponse } = await generateText({
-            model: openai('gpt-4o'),
-            messages: [
-                { role: 'user', content: message }
-            ],
-        });
-
-        // insert the ai response into chat_messages using insertChat db/queries 
-        const aiMessageId = randomUUID();
-        await insertChatMessage(
-            aiMessageId,
-            chatId,
-            userId,
-            aiResponse,
-            "assistant",
-            { model: "gpt-4o" }
-        );
-        console.log("AI response inserted");
-
-        // redirect to the chat id page on success 
-        // consider moving this earlier in process for instant chat/:id experience
+        // redirect immediately to chat/:id - the chat page will detect this is initial by checking if there's only a user message
         return redirect(`/chat/${chatId}`);
 
     } catch (error) {

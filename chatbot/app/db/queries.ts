@@ -30,13 +30,14 @@ export const fetchChats = async () => {
 }
 
 // start and insert a brand new chat thread
-export const createChat = async (id: string, userId: string) => {
+export const createChat = async (id: string, userId: string, chatTitle?: string) => {
     try {
         const chatId = id
 
         const result = await db.insert(chatTable).values({
             id: id,
             userId: userId,
+            chatTitle: chatTitle,
             createdAt: new Date(),
             updatedAt: new Date(),
         }).returning()

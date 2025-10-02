@@ -21,7 +21,7 @@ export const chatMessagesTable = pgTable('chat_message', {
     chatId: uuid('chat_id')
         .notNull()
         .references(() => chatTable.id),
-    message: text('title'),
+    message: text('message'),
     role: text('role'),
     modelConfig: json('model_config'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
